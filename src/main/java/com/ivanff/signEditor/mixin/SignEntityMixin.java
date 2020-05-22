@@ -7,6 +7,6 @@ import net.minecraft.block.entity.SignBlockEntity;
 
 @Mixin(SignBlockEntity.class)
 public interface SignEntityMixin {
-    @Accessor
-    void setEditable(boolean editable);
+    @Accessor("editable")
+    void setSignEditable(boolean editable);
 }
