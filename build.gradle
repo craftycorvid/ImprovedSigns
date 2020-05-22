@@ -52,7 +52,7 @@ jar {
 curseforge {
   apiKey = secretsProperties['curseApiKey']
   project {
-    id = '384341'
+    id = '384963'
     changelog = 'Intial Release'
     releaseType = 'release'
     addGameVersion '1.15.2'
@@ -65,7 +65,6 @@ curseforge {
     }
   }
   options {
-	  debug = true
 	  forgeGradleIntegration = false
   }
 }
