@@ -53,7 +53,7 @@ curseforge {
   apiKey = secretsProperties['curseApiKey']
   project {
     id = '384963'
-    changelog = 'Bug Fix'
+    changelog = 'Added Sign/Item Frame Passthrough'
     releaseType = 'release'
     addGameVersion '1.15.2'
 	relations {
