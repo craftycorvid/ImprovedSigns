@@ -3,7 +3,6 @@ package com.ivanff.signEditor;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
@@ -28,7 +27,7 @@ public class SignEditorMod implements ModInitializer {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             BlockPos pos = hitResult.getBlockPos();
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity.getType() == BlockEntityType.SIGN) {
+            if (blockEntity instanceof SignBlockEntity) {
                 SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                 if (player.isSneaking()) {
                     ((SignEntityMixin) signBlock).setSignEditable(true);
