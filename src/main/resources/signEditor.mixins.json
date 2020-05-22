@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.ivanff.signEditor.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "SignUseMixin",
+    "SignEntityMixin"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

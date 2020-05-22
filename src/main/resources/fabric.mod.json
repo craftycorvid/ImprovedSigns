@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "sign_editor",
+  "version": "${version}",
+  "name": "Sign Editor",
+  "description": "Edit placed signs on your fabric server",
+  "authors": [
+    "CleverCorvid"
+  ],
+  "contributors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/sign_editor/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "com.ivanff.signEditor.SignEditorMod"
+    ],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "signEditor.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}
