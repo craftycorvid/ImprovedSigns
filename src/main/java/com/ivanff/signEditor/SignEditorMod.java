@@ -7,8 +7,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.SignItem;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -26,18 +29,18 @@ import org.apache.logging.log4j.LogManager;
 
 public class SignEditorMod implements ModInitializer {
     public static final String MOD_ID = "sign_editor";
-    public static final String MOD_NAME = "Sign Editor";
+    public static final String MOD_NAME = "Better Signs & Frames";
 
     public static Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Sign Editor Initializing");
+        LOGGER.info("Better Signs & Frames Initializing");
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             BlockPos pos = hitResult.getBlockPos();
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof SignBlockEntity) {
+            if (blockEntity instanceof SignBlockEntity && isNotHoldingSign(player)) {
                 if (player.isSneaking()) {
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                     ((SignEntityMixin) signBlock).setSignEditable(true);
@@ -61,9 +64,6 @@ public class SignEditorMod implements ModInitializer {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof ItemFrameEntity) {
                 if (!player.isSneaking()) {
-                    ItemFrameEntity itemFrame = (ItemFrameEntity) entity;
-                    // TODO: Figure out a less hacy way to disable rotation.
-                    itemFrame.setRotation(itemFrame.getRotation() - 1);
                     BlockPos pos = entity.getBlockPos();
                     Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
                     handlePassthrough(player, world, hand, pos, oppositeDirection);
@@ -80,4 +80,10 @@ public class SignEditorMod implements ModInitializer {
         BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, pos, false); 
         hangingState.getBlock().onUse(hangingState, world, hangingPos, player, hand, hangingHitResult);
     }
+
+    boolean isNotHoldingSign(PlayerEntity player) {
+        Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
+        Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
+        return !(mainHandItem instanceof SignItem || offHandItem instanceof SignItem);
+    } 
 }

@@ -52,16 +52,16 @@ jar {
 curseforge {
   apiKey = secretsProperties['curseApiKey']
   project {
-    id = '384963'
-    changelog = 'Added Sign/Item Frame Passthrough'
+    id = project.curseforge_id
+    changelog = project.changelog
     releaseType = 'release'
-    addGameVersion '1.15.2'
+    addGameVersion project.minecraft_version
 	relations {
 		requiredDependency 'fabric-api'
 	}
 
     mainArtifact(remapJar) {
-      displayName = "Sign Editor $project.version"
+      displayName = "Better Signs & Frames $project.version"
     }
   }
   options {

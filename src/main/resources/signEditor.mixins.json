@@ -3,7 +3,9 @@
   "package": "com.ivanff.signEditor.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "SignEntityMixin"
+    "SignEntityMixin",
+    "SignItemMixin",
+    "ItemFrameEntityMixin"
   ],
   "client": [],
   "server": [],
