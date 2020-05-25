@@ -17,7 +17,7 @@ public abstract class SignItemMixin {
     @Inject(
         at = @At(
             value = "INVOKE",
-            target = "net.minecraft.entity.player.PlayerEntity.openEditSignScreen"
+            target = "Lnet/minecraft/entity/player/PlayerEntity;openEditSignScreen(Lnet/minecraft/block/entity/SignBlockEntity;)V"
         ),
         method = "postPlacement",
         cancellable = true)
