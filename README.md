@@ -1,5 +1,5 @@
 # Better Signs & Frames
-This mod is only for Fabric Servers and requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+This mod is only for Fabric Servers(or Single-Player) and requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 
 ### Features
  - **Sign Editor:** Edit placed signs by shift(sneak) + right-click

@@ -11,7 +11,7 @@
   "contact": {},
   "license": "MIT",
   "icon": "assets/sign_editor/icon.png",
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
     "main": [
       "com.ivanff.signEditor.SignEditorMod"
