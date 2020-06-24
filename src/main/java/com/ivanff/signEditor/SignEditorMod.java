@@ -48,7 +48,7 @@ public class SignEditorMod implements ModInitializer {
                         signBlock.setEditor(player);
                         player.openEditSignScreen(signBlock);
                     } else {
-                        player.sendMessage(new LiteralText("Sign is not editable"));
+                        player.sendMessage(new LiteralText("Sign is not editable"), false);
                     }
                 } else {
                     BlockState state = world.getBlockState(pos);
