@@ -45,7 +45,6 @@ public class SignEditorMod implements ModInitializer {
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                     ((SignEntityMixin) signBlock).setSignEditable(true);
                     if (signBlock.isEditable()) {
-                        signBlock.setEditor(player);
                         player.openEditSignScreen(signBlock);
                     } else {
                         player.sendMessage(new LiteralText("Sign is not editable"), false);
