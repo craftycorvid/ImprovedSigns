@@ -10,4 +10,7 @@ This mod is only for Fabric Servers(or Single-Player) and requires [Fabric API](
 ### Shout-outs
 Special thanks to Girafi for the idea for Passthrough Signs. Find their original mod for Forge [here](https://www.curseforge.com/minecraft/mc-mods/passthrough-signs)
 
+### Other Contributors
+- Fourmisain
+
  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
