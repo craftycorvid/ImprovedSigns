@@ -16,6 +16,6 @@ public abstract class ItemFrameEntityMixin {
     void onSetRotation(final PlayerEntity player, final Hand hand, final CallbackInfoReturnable<ActionResult> info) {
         if (!player.isSneaking()) {
             info.setReturnValue(ActionResult.FAIL);
-        } 
+        }
     }
 }

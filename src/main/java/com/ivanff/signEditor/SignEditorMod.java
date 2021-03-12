@@ -31,7 +31,7 @@ public class SignEditorMod implements ModInitializer {
     public static final String MOD_ID = "sign_editor";
     public static final String MOD_NAME = "Better Signs & Frames";
 
-    public static Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void onInitialize() {
