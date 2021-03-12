@@ -5,8 +5,7 @@
   "mixins": [
     "SignEntityMixin",
     "SignItemMixin",
-    "ItemFrameEntityMixin",
-    "SignEditScreenMixin"
+    "ItemFrameEntityMixin"
   ],
   "client": [],
   "server": [],
