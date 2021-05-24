@@ -83,6 +83,6 @@ public class SignEditorMod implements ModInitializer {
     boolean hasEmptyHand(PlayerEntity player) {
         Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
         Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
-        return mainHandItem is null && !(offHandItem instanceof BlockItem);
+        return mainHandItem == null && !(offHandItem instanceof BlockItem);
     } 
 }
