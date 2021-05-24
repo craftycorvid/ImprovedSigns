@@ -11,7 +11,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.SignItem;
+import net.minecraft.item.BlockItem;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -40,7 +40,7 @@ public class SignEditorMod implements ModInitializer {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             BlockPos pos = hitResult.getBlockPos();
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof SignBlockEntity && isNotHoldingSign(player)) {
+            if (blockEntity instanceof SignBlockEntity && hasEmptyHand(player)) {
                 if (player.isSneaking()) {
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                     ((SignEntityMixin) signBlock).setSignEditable(true);
@@ -80,9 +80,9 @@ public class SignEditorMod implements ModInitializer {
         hangingState.getBlock().onUse(hangingState, world, hangingPos, player, hand, hangingHitResult);
     }
 
-    boolean isNotHoldingSign(PlayerEntity player) {
+    boolean hasEmptyHand(PlayerEntity player) {
         Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
         Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
-        return !(mainHandItem instanceof SignItem || offHandItem instanceof SignItem);
+        return mainHandItem is null && !(offHandItem instanceof BlockItem);
     } 
 }
