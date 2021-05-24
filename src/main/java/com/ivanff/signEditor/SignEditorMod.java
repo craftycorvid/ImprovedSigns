@@ -11,6 +11,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.BlockItem;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
@@ -81,8 +82,8 @@ public class SignEditorMod implements ModInitializer {
     }
 
     boolean hasEmptyHand(PlayerEntity player) {
-        Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
+        ItemStack mainHandStack = player.getEquippedStack(EquipmentSlot.MAINHAND);
         Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
-        return mainHandItem == null && !(offHandItem instanceof BlockItem);
+        return mainHandStack.isEmpty() && !(offHandItem instanceof BlockItem);
     } 
 }
