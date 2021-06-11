@@ -1,14 +1,14 @@
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 	id "com.modrinth.minotaur" version "1.1.0"
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
-version = "mc-${project.minecraft_version}-${project.mod_version}"
+version = "${project.mod_version}"
 group = project.maven_group
 
 def secretsProperties = new Properties()
@@ -27,15 +27,10 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+	inputs.property "version", project.mod_version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
+		expand "version": project.mod_version
 	}
 }
 
@@ -44,6 +39,16 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
+
+	// Minecraft 1.17 upwards uses Java 16.
+	it.options.release = 16
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
 }
 
 jar {
@@ -75,8 +80,8 @@ import com.modrinth.minotaur.TaskModrinthUpload
 task publishModrinth (type: TaskModrinthUpload) {
     token = secretsProperties['modrinthToken']
     projectId = project.modrinth_id
-	versionName = "Better Signs & Frames $project.mod_version"
-    versionNumber = project.mod_version
+	versionName = "Better Signs & Frames $project.mod_version for MC $project.minecraft_version"
+    versionNumber = "mc$project.minecraft_version-v$project.mod_version"
 	releaseType = 'release'
     uploadFile = remapJar
 	changelog = project.changelog
