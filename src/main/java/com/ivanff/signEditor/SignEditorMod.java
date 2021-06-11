@@ -41,8 +41,9 @@ public class SignEditorMod implements ModInitializer {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             BlockPos pos = hitResult.getBlockPos();
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof SignBlockEntity && hasEmptyHand(player)) {
-                if (player.isSneaking()) {
+            if (!(blockEntity instanceof SignBlockEntity)) return ActionResult.PASS;
+            if (player.isSneaking()) {
+                if (hasEmptyHand(player)) {
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                     ((SignEntityMixin) signBlock).setSignEditable(true);
                     if (signBlock.isEditable()) {
@@ -50,12 +51,12 @@ public class SignEditorMod implements ModInitializer {
                     } else {
                         player.sendMessage(new LiteralText("Sign is not editable"), false);
                     }
-                } else {
-                    BlockState state = world.getBlockState(pos);
-                    if (state.contains(HorizontalFacingBlock.FACING)) {
-                        Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
-                        handlePassthrough(player, world, hand, pos, oppositeDirection);
-                    }
+                }
+            } else {
+                BlockState state = world.getBlockState(pos);
+                if (state.contains(HorizontalFacingBlock.FACING)) {
+                    Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
+                    handlePassthrough(player, world, hand, pos, oppositeDirection);
                 }
             }
             return ActionResult.PASS;

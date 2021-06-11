@@ -8,7 +8,10 @@
     "CleverCorvid"
   ],
   "contributors": [],
-  "contact": {},
+  "contact": {
+    "sources": "https://github.com/Ivan0xFF/BetterSignsAndFrames",
+    "issues": "https://github.com/Ivan0xFF/BetterSignsAndFrames/issues"
+  },
   "license": "MIT",
   "icon": "assets/sign_editor/icon.png",
   "environment": "*",
@@ -23,7 +26,8 @@
     "signEditor.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*"
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x"
   }
 }
