@@ -14,6 +14,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.DecorationItem;
+import net.minecraft.item.DyeItem;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -83,6 +85,7 @@ public class SignEditorMod implements ModInitializer {
     }
 
     void handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction oppositeDirection) {
+        if (isHoldingDye(player)) return;
         BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(), oppositeDirection.getOffsetZ());
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
@@ -91,8 +94,15 @@ public class SignEditorMod implements ModInitializer {
     }
 
     boolean hasEmptyHand(PlayerEntity player) {
-        ItemStack mainHandStack = player.getEquippedStack(EquipmentSlot.MAINHAND);
+        Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
         Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
-        return mainHandStack.isEmpty() && !(offHandItem instanceof BlockItem);
+        return !(mainHandItem instanceof BlockItem || mainHandItem instanceof DecorationItem || offHandItem instanceof BlockItem || offHandItem instanceof DecorationItem);
     } 
+
+    boolean isHoldingDye(PlayerEntity player) {
+        Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
+        Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
+        boolean isSquidInk = Item.getRawId(mainHandItem) == 808 || Item.getRawId(mainHandItem) == 808;
+        return mainHandItem instanceof DyeItem || offHandItem instanceof DyeItem || isSquidInk;
+    }
 }
