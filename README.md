@@ -6,7 +6,8 @@ This mod is only for Fabric Servers(or Single-Player) and requires [Fabric API](
 ### Features
  - **Sign Editor:** Edit placed signs by shift(sneak) + right-click with an empty hand
  - **Sign & Item Frame Passthrough:** Access chests, shulker boxes, barrels, etc behind signs by right-clicking the sign.
- - **Signs Retain** - Breaking a sign will retain that sign's text, color and glowing. Put the sign in a crafting window to reset it.
+ - **Signs Retain** - Breaking a sign will retain that sign's text, color and glowing. Put the sign in a crafting window to reset it. 
+    - Note: Seeing the saved text in your inventory requires client-side installation
  - Interact with Item Frames by shift(sneak) + right-click
  - Stops Sign editor from opening when placing new signs
 
