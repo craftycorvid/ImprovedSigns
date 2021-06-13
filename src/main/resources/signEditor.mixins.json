@@ -3,6 +3,8 @@
   "package": "com.ivanff.signEditor.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "AbstractSignBlockMixin",
+    "SignBlockEntityMixin",
     "SignEntityMixin",
     "SignItemMixin",
     "ItemFrameEntityMixin"

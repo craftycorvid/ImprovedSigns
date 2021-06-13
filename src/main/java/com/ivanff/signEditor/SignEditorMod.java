@@ -12,18 +12,22 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import org.apache.logging.log4j.Logger;
 
+import com.ivanff.signEditor.loot.condition.SignTextLootCondition;
 import com.ivanff.signEditor.mixin.SignEntityMixin;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,9 +38,13 @@ public class SignEditorMod implements ModInitializer {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
+    public static LootConditionType SIGN_TEXT;
+
     @Override
     public void onInitialize() {
         LOGGER.info("Better Signs & Frames Initializing");
+
+        SIGN_TEXT = Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier("sign_text"), new LootConditionType(new SignTextLootCondition.Serializer()));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             BlockPos pos = hitResult.getBlockPos();

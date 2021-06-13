@@ -1,0 +1,62 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:birch_sign",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "Color",
+                  "target": "Retained.Color",
+                  "op": "replace"
+                },
+                {
+                  "source": "GlowingText",
+                  "target": "Retained.GlowingText",
+                  "op": "replace"
+                },
+                {
+                  "source": "Text1",
+                  "target": "Retained.Text1",
+                  "op": "replace"
+                },
+                {
+                  "source": "Text2",
+                  "target": "Retained.Text2",
+                  "op": "replace"
+                },
+                {
+                  "source": "Text3",
+                  "target": "Retained.Text3",
+                  "op": "replace"
+                },
+                {
+                  "source": "Text4",
+                  "target": "Retained.Text4",
+                  "op": "replace"
+                }
+              ],
+              "conditions": [
+                {
+                  "condition": "minecraft:sign_text"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}
