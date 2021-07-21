@@ -24,9 +24,9 @@ public abstract class AbstractSignBlockMixin extends BlockWithEntity {
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
-        NbtCompound compoundTag = itemStack.getTag();
-        if (compoundTag != null && compoundTag.contains("Retained")) {
-            NbtCompound compoundTag2 = compoundTag.getCompound("Retained");
+        NbtCompound compoundTag = itemStack.getNbt();
+        if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
+            NbtCompound compoundTag2 = compoundTag.getCompound("BlockEntityTag");
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof SignBlockEntity) {
                 for(int i = 0; i < 4; ++i) {

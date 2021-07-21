@@ -30,8 +30,8 @@ public class SignItemMixin extends WallStandingBlockItem {
 
     @Inject(method = "postPlacement", at = @At(value = "INVOKE",  target = "Lnet/minecraft/entity/player/PlayerEntity;openEditSignScreen(Lnet/minecraft/block/entity/SignBlockEntity;)V"), cancellable = true)
     protected void postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> info){
-        NbtCompound compoundTag = stack.getTag();
-        if (compoundTag != null && compoundTag.contains("Retained")) {
+        NbtCompound compoundTag = stack.getNbt();
+        if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
             info.cancel();
         }
     }
@@ -40,9 +40,9 @@ public class SignItemMixin extends WallStandingBlockItem {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        NbtCompound compoundTag = stack.getTag();
-        if (compoundTag != null && compoundTag.contains("Retained")) {
-            NbtCompound compoundTag2 = compoundTag.getCompound("Retained");
+        NbtCompound compoundTag = stack.getNbt();
+        if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
+            NbtCompound compoundTag2 = compoundTag.getCompound("BlockEntityTag");
             for(int i = 0; i < 4; ++i) {
                 String string = compoundTag2.getString("Text" + (i + 1));
                 Text text = Text.Serializer.fromJson(string.isEmpty() ? "\"\"" : string);

@@ -14,32 +14,32 @@
               "ops": [
                 {
                   "source": "Color",
-                  "target": "Retained.Color",
+                  "target": "BlockEntityTag.Color",
                   "op": "replace"
                 },
                 {
                   "source": "GlowingText",
-                  "target": "Retained.GlowingText",
+                  "target": "BlockEntityTag.GlowingText",
                   "op": "replace"
                 },
                 {
                   "source": "Text1",
-                  "target": "Retained.Text1",
+                  "target": "BlockEntityTag.Text1",
                   "op": "replace"
                 },
                 {
                   "source": "Text2",
-                  "target": "Retained.Text2",
+                  "target": "BlockEntityTag.Text2",
                   "op": "replace"
                 },
                 {
                   "source": "Text3",
-                  "target": "Retained.Text3",
+                  "target": "BlockEntityTag.Text3",
                   "op": "replace"
                 },
                 {
                   "source": "Text4",
-                  "target": "Retained.Text4",
+                  "target": "BlockEntityTag.Text4",
                   "op": "replace"
                 }
               ],
