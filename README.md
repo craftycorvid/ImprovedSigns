@@ -1,4 +1,4 @@
- [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Curseforge](http://cf.way2muchnoise.eu/384963.svg)](https://www.curseforge.com/minecraft/mc-mods/better-signs-and-frames) ![For MC 1.17 | 1.16 | 1.15](http://cf.way2muchnoise.eu/versions/For%20MC_384963_all.svg)
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Curseforge](http://cf.way2muchnoise.eu/384963.svg)](https://www.curseforge.com/minecraft/mc-mods/better-signs-and-frames) ![For MC 1.18 | 1.17 | 1.16 | 1.15](http://cf.way2muchnoise.eu/versions/For%20MC_384963_all.svg)
 
 # Better Signs & Frames
 This mod is only for Fabric Servers(or Single-Player) and requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
