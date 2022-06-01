@@ -12,10 +12,10 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.text.Text;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DecorationItem;
 import net.minecraft.item.DyeItem;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -58,7 +58,7 @@ public class SignEditorMod implements ModInitializer {
                     if (signBlock.isEditable()) {
                         player.openEditSignScreen(signBlock);
                     } else {
-                        player.sendMessage(new LiteralText("Sign is not editable"), false);
+                        player.sendMessage(Text.literal("Sign is not editable"), false);
                     }
                 }
             } else {
