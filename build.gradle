@@ -71,6 +71,8 @@ curseforge {
     id = project.curseforge_id
     changelog = project.changelog
     releaseType = 'release'
+	addGameVersion "Fabric"
+	addGameVersion "Quilt"
     addGameVersion project.minecraft_version
 	relations {
 		requiredDependency 'fabric-api'
@@ -95,6 +97,6 @@ modrinth {
 	versionType = 'RELEASE'
     uploadFile = remapJar
 	changelog = project.changelog
-    gameVersions = [project.minecraft_version] // An array of game versions the version supports
-    loaders = ['fabric'] // Self-explanatory.
+    gameVersions = [project.minecraft_version]
+    loaders = ['fabric','quilt']
 }

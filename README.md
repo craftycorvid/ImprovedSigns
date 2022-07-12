@@ -10,11 +10,8 @@ This mod is only for Fabric Servers(or Single-Player) and requires [Fabric API](
     - Note: Seeing the saved text in your inventory requires installing either this mod or [Inspecio](https://modrinth.com/mod/inspecio) on the client.
  - Interact with Item Frames by shift(sneak) + right-click
  - Stops Sign editor from opening when placing new signs
+ - Flan compatiblity for permissions (Thanks to Jarva for the contribution)
 
 ### Shout-outs
  - Original Sign Retain functionality merged from [umollu's Sign Retain](https://www.curseforge.com/minecraft/mc-mods/sign-retain)
  - Special thanks to Girafi for the idea for Passthrough Signs. Find their original mod for Forge [here](https://www.curseforge.com/minecraft/mc-mods/passthrough-signs)
-
-### Other Contributors
-- Fourmisain
-- slemal
