@@ -14,8 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.text.NbtTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -34,7 +32,7 @@ import com.ivanff.signEditor.mixin.SignEntityMixin;
 
 import org.apache.logging.log4j.LogManager;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class SignEditorMod implements ModInitializer {
     public static final String MOD_ID = "sign_editor";
@@ -67,8 +65,9 @@ public class SignEditorMod implements ModInitializer {
                     }
                 }
             } else {
-                ItemStack sign = getSignHand(player);
-                if (sign != null) {
+                Optional<ItemStack> signOption = getSignHand(player);
+                if (signOption.isPresent()) {
+                    ItemStack sign = signOption.get();
                     NbtCompound nbt = sign.getOrCreateNbt();
                     NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
@@ -117,12 +116,12 @@ public class SignEditorMod implements ModInitializer {
         return !(mainHandItem instanceof BlockItem || mainHandItem instanceof DecorationItem || offHandItem instanceof BlockItem || offHandItem instanceof DecorationItem);
     }
 
-    @Nullable ItemStack getSignHand(PlayerEntity player) {
+    Optional<ItemStack> getSignHand(PlayerEntity player) {
         ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
         ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
-        if (mainHandItem.getItem() instanceof SignItem) return mainHandItem;
-        if (offHandItem.getItem() instanceof SignItem) return offHandItem;
-        return null;
+        if (mainHandItem.getItem() instanceof SignItem) return Optional.of(mainHandItem);
+        if (offHandItem.getItem() instanceof SignItem) return Optional.of(offHandItem);
+        return Optional.empty();
     }
 
     boolean isHoldingDye(PlayerEntity player) {
