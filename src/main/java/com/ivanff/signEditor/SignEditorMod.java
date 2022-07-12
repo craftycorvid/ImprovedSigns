@@ -11,12 +11,12 @@ import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.item.*;
 import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtString;
+import net.minecraft.text.NbtTextContent;
 import net.minecraft.text.Text;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.DecorationItem;
-import net.minecraft.item.DyeItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -33,6 +33,8 @@ import com.ivanff.signEditor.loot.condition.SignTextLootCondition;
 import com.ivanff.signEditor.mixin.SignEntityMixin;
 
 import org.apache.logging.log4j.LogManager;
+
+import javax.annotation.Nullable;
 
 public class SignEditorMod implements ModInitializer {
     public static final String MOD_ID = "sign_editor";
@@ -65,10 +67,24 @@ public class SignEditorMod implements ModInitializer {
                     }
                 }
             } else {
-                BlockState state = world.getBlockState(pos);
-                if (state.contains(HorizontalFacingBlock.FACING)) {
-                    Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
-                    handlePassthrough(player, world, hand, pos, oppositeDirection);
+                ItemStack sign = getSignHand(player);
+                if (sign != null) {
+                    NbtCompound nbt = sign.getOrCreateNbt();
+                    NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
+                    SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
+                    for(int i = 0; i < 4; i++) {
+                        Text text = signBlock.getTextOnRow(i, false);
+                        String string = Text.Serializer.toJson(text);
+                        blockEntityTag.putString(String.format("Text%d", i + 1), string);
+                    }
+                    nbt.put("BlockEntityTag", blockEntityTag);
+                    sign.setNbt(nbt);
+                } else {
+                    BlockState state = world.getBlockState(pos);
+                    if (state.contains(HorizontalFacingBlock.FACING)) {
+                        Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
+                        handlePassthrough(player, world, hand, pos, oppositeDirection);
+                    }
                 }
             }
             return ActionResult.PASS;
@@ -99,7 +115,15 @@ public class SignEditorMod implements ModInitializer {
         Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
         Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
         return !(mainHandItem instanceof BlockItem || mainHandItem instanceof DecorationItem || offHandItem instanceof BlockItem || offHandItem instanceof DecorationItem);
-    } 
+    }
+
+    @Nullable ItemStack getSignHand(PlayerEntity player) {
+        ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
+        ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
+        if (mainHandItem.getItem() instanceof SignItem) return mainHandItem;
+        if (offHandItem.getItem() instanceof SignItem) return offHandItem;
+        return null;
+    }
 
     boolean isHoldingDye(PlayerEntity player) {
         Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
