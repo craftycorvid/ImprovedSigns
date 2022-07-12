@@ -1,5 +1,6 @@
 package com.ivanff.signEditor;
 
+import com.ivanff.signEditor.compat.FlanCompat;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -48,11 +49,13 @@ public class SignEditorMod implements ModInitializer {
         SIGN_TEXT = Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier("sign_text"), new LootConditionType(new SignTextLootCondition.Serializer()));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            if (world.isClient) return ActionResult.PASS;
             BlockPos pos = hitResult.getBlockPos();
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (!(blockEntity instanceof SignBlockEntity)) return ActionResult.PASS;
             if (player.isSneaking()) {
                 if (hasEmptyHand(player)) {
+                    if (FlanCompat.check(world, player, pos) == ActionResult.FAIL) return ActionResult.PASS;
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                     ((SignEntityMixin) signBlock).setSignEditable(true);
                     if (signBlock.isEditable()) {
