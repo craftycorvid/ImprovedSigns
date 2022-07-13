@@ -56,7 +56,7 @@ public class SignEditorMod implements ModInitializer {
             if (!(blockEntity instanceof SignBlockEntity)) return ActionResult.PASS;
             if (player.isSneaking()) {
                 if (hasEmptyHand(player)) {
-                    if (FlanCompat.check(world, player, pos) == ActionResult.FAIL) return ActionResult.PASS;
+                    if (FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) return ActionResult.PASS;
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                     ((SignEntityMixin) signBlock).setSignEditable(true);
                     if (signBlock.isEditable()) {
@@ -90,6 +90,7 @@ public class SignEditorMod implements ModInitializer {
     void handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction oppositeDirection) {
         if (isHoldingDye(player)) return;
         BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(), oppositeDirection.getOffsetZ());
+        if (FlanCompat.checkPassthrough(world, player, hangingPos) == ActionResult.FAIL) return;
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
         BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, pos, false); 
