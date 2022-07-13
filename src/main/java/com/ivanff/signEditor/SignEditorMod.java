@@ -45,6 +45,7 @@ public class SignEditorMod implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Better Signs & Frames Initializing");
+        FlanCompat.register();
 
         SIGN_TEXT = Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier("sign_text"), new LootConditionType(new SignTextLootCondition.Serializer()));
 
