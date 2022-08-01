@@ -92,7 +92,14 @@ public class SignEditorMod implements ModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof ItemFrameEntity) {
-                if (!player.isSneaking()) {
+                Optional<ItemStack> amethystOption = getAmethystHand(player);
+                if (amethystOption.isPresent()) {
+                    ItemStack amethyst = amethystOption.get();
+                    if (!player.getAbilities().creativeMode) {
+                        amethyst.decrement(1);
+                    }
+                    entity.setInvisible(true);
+                } else if (!player.isSneaking()) {
                     BlockPos pos = entity.getBlockPos();
                     Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
                     handlePassthrough(player, world, hand, pos, oppositeDirection);
@@ -123,6 +130,14 @@ public class SignEditorMod implements ModInitializer {
         ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
         if (mainHandItem.getItem() instanceof SignItem) return Optional.of(mainHandItem);
         if (offHandItem.getItem() instanceof SignItem) return Optional.of(offHandItem);
+        return Optional.empty();
+    }
+
+    Optional<ItemStack> getAmethystHand(PlayerEntity player) {
+        ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
+        ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
+        if (mainHandItem.isOf(Items.AMETHYST_SHARD)) return Optional.of(mainHandItem);
+        if (offHandItem.isOf(Items.AMETHYST_SHARD)) return Optional.of(offHandItem);
         return Optional.empty();
     }
 
