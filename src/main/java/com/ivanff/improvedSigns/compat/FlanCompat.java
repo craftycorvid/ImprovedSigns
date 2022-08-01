@@ -1,4 +1,4 @@
-package com.ivanff.signEditor.compat;
+package com.ivanff.improvedSigns.compat;
 
 import io.github.flemmli97.flan.api.ClaimHandler;
 import io.github.flemmli97.flan.api.data.IPermissionContainer;

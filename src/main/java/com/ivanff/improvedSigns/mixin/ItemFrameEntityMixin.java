@@ -1,4 +1,4 @@
-package com.ivanff.signEditor.mixin;
+package com.ivanff.improvedSigns.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
@@ -9,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.ivanff.improvedSigns.config.ModConfig;
 
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,7 +25,7 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntity {
 
     @Inject(at = @At("HEAD"), method = "interact", cancellable = true)
     void onSetRotation(final PlayerEntity player, final Hand hand, final CallbackInfoReturnable<ActionResult> info) {
-        if (!player.isSneaking()) {
+        if (ModConfig.get().enableSignPassthrough && !player.isSneaking()) {
             info.setReturnValue(ActionResult.FAIL);
         }
     }

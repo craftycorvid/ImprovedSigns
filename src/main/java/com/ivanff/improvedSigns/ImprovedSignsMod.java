@@ -1,6 +1,5 @@
-package com.ivanff.signEditor;
+package com.ivanff.improvedSigns;
 
-import com.ivanff.signEditor.compat.FlanCompat;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -27,16 +26,19 @@ import net.minecraft.world.World;
 
 import org.apache.logging.log4j.Logger;
 
-import com.ivanff.signEditor.loot.condition.SignTextLootCondition;
-import com.ivanff.signEditor.mixin.SignEntityMixin;
+import com.ivanff.improvedSigns.compat.FlanCompat;
+import com.ivanff.improvedSigns.config.ModConfig;
+import com.ivanff.improvedSigns.loot.condition.SignTextLootCondition;
+import com.ivanff.improvedSigns.mixin.SignEntityMixin;
 
 import org.apache.logging.log4j.LogManager;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
-public class SignEditorMod implements ModInitializer {
-    public static final String MOD_ID = "sign_editor";
-    public static final String MOD_NAME = "Better Signs & Frames";
+public class ImprovedSignsMod implements ModInitializer {
+    public static final String MOD_ID = "improvedsigns";
+    public static final String MOD_NAME = "Improved Signs";
 
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -44,9 +46,9 @@ public class SignEditorMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Better Signs & Frames Initializing");
+        LOGGER.info("Improved Signs Initializing");
+        ModConfig.init();
         FlanCompat.register();
-
         SIGN_TEXT = Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier("sign_text"), new LootConditionType(new SignTextLootCondition.Serializer()));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
@@ -56,7 +58,7 @@ public class SignEditorMod implements ModInitializer {
             if (!(blockEntity instanceof SignBlockEntity)) return ActionResult.PASS;
             if (player.isSneaking()) {
                 if (hasEmptyHand(player)) {
-                    if (FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) return ActionResult.PASS;
+                    if (!(ModConfig.get().enableSignEdit) || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) return ActionResult.PASS;
                     SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                     ((SignEntityMixin) signBlock).setSignEditable(true);
                     if (signBlock.isEditable()) {
@@ -67,7 +69,7 @@ public class SignEditorMod implements ModInitializer {
                 }
             } else {
                 Optional<ItemStack> signOption = getSignHand(player);
-                if (signOption.isPresent()) {
+                if (ModConfig.get().enableSignCopy && signOption.isPresent()) {
                     ItemStack sign = signOption.get();
                     NbtCompound nbt = sign.getOrCreateNbt();
                     NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
@@ -92,11 +94,19 @@ public class SignEditorMod implements ModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof ItemFrameEntity) {
-                Optional<ItemStack> amethystOption = getAmethystHand(player);
-                if (amethystOption.isPresent()) {
-                    ItemStack amethyst = amethystOption.get();
+                Class items = Items.class;
+                Item item;
+                try {
+                    Field itemField = items.getField(ModConfig.get().invisibleFrameItem);
+                    item = (Item) itemField.get(null);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    item = Items.AMETHYST_SHARD;
+                }
+                Optional<ItemStack> itemOption = geItemHand(player, item);
+                if (ModConfig.get().enableInvisibleFrames && itemOption.isPresent()) {
+                    ItemStack itemStack = itemOption.get();
                     if (!player.getAbilities().creativeMode) {
-                        amethyst.decrement(1);
+                        itemStack.decrement(1);
                     }
                     entity.setInvisible(true);
                 } else if (!player.isSneaking()) {
@@ -110,6 +120,7 @@ public class SignEditorMod implements ModInitializer {
     }
 
     void handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction oppositeDirection) {
+        if (!ModConfig.get().enableSignPassthrough) return;
         if (isHoldingDye(player)) return;
         BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(), oppositeDirection.getOffsetZ());
         if (FlanCompat.checkPassthrough(world, player, hangingPos) == ActionResult.FAIL) return;
@@ -125,19 +136,19 @@ public class SignEditorMod implements ModInitializer {
         return !(mainHandItem instanceof BlockItem || mainHandItem instanceof DecorationItem || offHandItem instanceof BlockItem || offHandItem instanceof DecorationItem);
     }
 
+    Optional<ItemStack> geItemHand(PlayerEntity player, Item item) {
+        ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
+        ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
+        if (mainHandItem.isOf(item)) return Optional.of(mainHandItem);
+        if (offHandItem.isOf(item)) return Optional.of(offHandItem);
+        return Optional.empty();
+    }
+
     Optional<ItemStack> getSignHand(PlayerEntity player) {
         ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
         ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
         if (mainHandItem.getItem() instanceof SignItem) return Optional.of(mainHandItem);
         if (offHandItem.getItem() instanceof SignItem) return Optional.of(offHandItem);
-        return Optional.empty();
-    }
-
-    Optional<ItemStack> getAmethystHand(PlayerEntity player) {
-        ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
-        ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
-        if (mainHandItem.isOf(Items.AMETHYST_SHARD)) return Optional.of(mainHandItem);
-        if (offHandItem.isOf(Items.AMETHYST_SHARD)) return Optional.of(offHandItem);
         return Optional.empty();
     }
 

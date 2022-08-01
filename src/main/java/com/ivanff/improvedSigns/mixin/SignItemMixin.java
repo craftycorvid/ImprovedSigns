@@ -1,4 +1,4 @@
-package com.ivanff.signEditor.mixin;
+package com.ivanff.improvedSigns.mixin;
 
 import java.util.List;
 
@@ -7,6 +7,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.ivanff.improvedSigns.config.ModConfig;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -59,6 +61,6 @@ public class SignItemMixin extends WallStandingBlockItem {
         method = "postPlacement",
         cancellable = true)
     private void onPlacement(final BlockPos pos, final World world, final PlayerEntity player, final ItemStack stack, final BlockState state, final CallbackInfoReturnable<Boolean> info) {
-        info.cancel();
+        if (ModConfig.get().disableSignEditOnPlace) info.cancel();
     }
 }

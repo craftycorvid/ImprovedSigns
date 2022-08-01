@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "sign_editor",
+  "id": "improvedsigns",
   "version": "${version}",
-  "name": "Better Signs & Frames",
-  "description": "Sign Editor & Passthrough for your fabric server",
+  "name": "Improved Signs",
+  "description": "Improvements for your signs and frames on your server",
   "authors": [
     "CleverCorvid"
   ],
   "contributors": [],
   "contact": {
-    "sources": "https://github.com/Ivan0xFF/BetterSignsAndFrames",
-    "issues": "https://github.com/Ivan0xFF/BetterSignsAndFrames/issues"
+    "sources": "https://github.com/Ivan0xFF/ImprovedSigns",
+    "issues": "https://github.com/Ivan0xFF/ImprovedSigns/issues"
   },
   "license": "MIT",
-  "icon": "assets/sign_editor/icon.png",
+  "icon": "assets/improved_signs/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.ivanff.signEditor.SignEditorMod"
+      "com.ivanff.improvedSigns.ImprovedSignsMod"
     ],
     "client": [],
     "server": []
   },
   "mixins": [
-    "signEditor.mixins.json"
+    "improvedSigns.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.11.3",

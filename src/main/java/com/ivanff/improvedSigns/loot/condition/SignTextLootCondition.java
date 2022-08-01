@@ -1,9 +1,11 @@
-package com.ivanff.signEditor.loot.condition;
+package com.ivanff.improvedSigns.loot.condition;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import com.ivanff.signEditor.ISignBlockEntity;
+import com.ivanff.improvedSigns.ISignBlockEntity;
+import com.ivanff.improvedSigns.config.ModConfig;
+
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
@@ -24,6 +26,7 @@ public class SignTextLootCondition implements LootCondition {
 
     @Override
     public boolean test(LootContext lootContext) {
+        if (!ModConfig.get().enableSignRetain) return false;
         SignBlockEntity signBlockEntity = (SignBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
         for(int i = 0; i < 4; i++) {
             String string = ((ISignBlockEntity)signBlockEntity).getTextOnRow(i).getString();

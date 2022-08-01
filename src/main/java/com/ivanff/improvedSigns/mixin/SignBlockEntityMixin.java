@@ -1,11 +1,12 @@
-package com.ivanff.signEditor.mixin;
+package com.ivanff.improvedSigns.mixin;
 
-import com.ivanff.signEditor.ISignBlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+
+import com.ivanff.improvedSigns.ISignBlockEntity;
 
 @Mixin(SignBlockEntity.class)
 public class SignBlockEntityMixin implements ISignBlockEntity {

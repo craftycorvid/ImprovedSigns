@@ -1,4 +1,4 @@
-package com.ivanff.signEditor;
+package com.ivanff.improvedSigns;
 
 import net.minecraft.text.Text;
 
