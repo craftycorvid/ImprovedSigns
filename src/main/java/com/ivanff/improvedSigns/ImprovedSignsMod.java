@@ -37,7 +37,7 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 public class ImprovedSignsMod implements ModInitializer {
-    public static final String MOD_ID = "improvedsigns";
+    public static final String MOD_ID = "improved-signs";
     public static final String MOD_NAME = "Improved Signs";
 
     public static final Logger LOGGER = LogManager.getLogger();
