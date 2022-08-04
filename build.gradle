@@ -36,10 +36,10 @@ dependencies {
 	include("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
     modImplementation("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
 
-	modCompileOnly("io.github.flemmli97:flan:${minecraft_version}-${flan_version}:fabric-api") {
+	modCompileOnly("io.github.flemmli97:flan:${flan_version}:fabric-api") {
 		transitive = false //Remove this if you want to have all those optional dependencies
 	}
-	modRuntimeOnly("io.github.flemmli97:flan:${minecraft_version}-${flan_version}:fabric") {
+	modRuntimeOnly("io.github.flemmli97:flan:${flan_version}:fabric") {
 		transitive = false //Remove this if you want to have all those optional dependencies
 	}
 
