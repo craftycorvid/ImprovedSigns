@@ -21,7 +21,7 @@ public class SignTextLootCondition implements LootCondition {
 
     @Override
     public LootConditionType getType() {
-        return null;
+        return LootConditionTypes.SIGN_TEXT;
     }
 
     @Override

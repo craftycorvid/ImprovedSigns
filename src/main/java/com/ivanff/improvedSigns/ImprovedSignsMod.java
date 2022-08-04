@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.ivanff.improvedSigns.compat.FlanCompat;
 import com.ivanff.improvedSigns.config.ModConfig;
-import com.ivanff.improvedSigns.loot.condition.SignTextLootCondition;
+import com.ivanff.improvedSigns.loot.condition.LootConditionTypes;
 import com.ivanff.improvedSigns.mixin.SignEntityMixin;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,14 +42,12 @@ public class ImprovedSignsMod implements ModInitializer {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public static LootConditionType SIGN_TEXT;
-
     @Override
     public void onInitialize() {
         LOGGER.info("Improved Signs Initializing");
         ModConfig.init();
+        LootConditionTypes.register();
         FlanCompat.register();
-        SIGN_TEXT = Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier("sign_text"), new LootConditionType(new SignTextLootCondition.Serializer()));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (world.isClient) return ActionResult.PASS;
