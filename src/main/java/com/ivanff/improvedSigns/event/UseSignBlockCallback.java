@@ -30,13 +30,17 @@ public class UseSignBlockCallback {
         if (!(blockEntity instanceof SignBlockEntity)) return ActionResult.PASS;
         if (player.isSneaking()) {
             if (ImprovedSignsUtils.hasEmptyHand(player)) {
-                if (!(ModConfig.get().enableSignEdit) || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) return ActionResult.PASS;
+                if (!(ModConfig.get().enableSignEdit) || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) {
+                    player.sendMessage(Text.literal("Sign is not editable"), true);
+
+                    return ActionResult.PASS;
+                }
                 SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
                 ((SignEntityMixin) signBlock).setSignEditable(true);
                 if (signBlock.isEditable()) {
                     player.openEditSignScreen(signBlock);
                 } else {
-                    player.sendMessage(Text.literal("Sign is not editable"), false);
+                    player.sendMessage(Text.literal("Sign is not editable"), true);
                 }
             }
         } else {
@@ -53,8 +57,8 @@ public class UseSignBlockCallback {
                 }
                 nbt.put("BlockEntityTag", blockEntityTag);
                 sign.setNbt(nbt);
-            } else {
-                if (!ModConfig.get().enableSignPassthrough) return ActionResult.PASS;
+                player.sendMessage(Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
+            } else if (ModConfig.get().enableSignPassthrough) {
                 BlockState state = world.getBlockState(pos);
                 if (state.contains(HorizontalFacingBlock.FACING)) {
                     Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
