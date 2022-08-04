@@ -18,6 +18,7 @@ public class ModConfig implements Config {
     public boolean enableSignCopy = true;
 
     @Comment("==== Item Frames ===")
+    public boolean enableFramePassthrough = true;
     public boolean enableInvisibleFrames = true;
     @Comment("Choose what item turns frames invisible. Supported Items:\n" +
              "\tAMETHYST_SHARD\n" + 
