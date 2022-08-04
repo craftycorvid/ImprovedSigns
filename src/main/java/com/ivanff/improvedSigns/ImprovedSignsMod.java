@@ -92,25 +92,35 @@ public class ImprovedSignsMod implements ModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof ItemFrameEntity) {
-                Class items = Items.class;
-                Item item;
-                try {
-                    Field itemField = items.getField(ModConfig.get().invisibleFrameItem);
-                    item = (Item) itemField.get(null);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    item = Items.AMETHYST_SHARD;
-                }
-                Optional<ItemStack> itemOption = geItemHand(player, item);
-                if (ModConfig.get().enableInvisibleFrames && itemOption.isPresent()) {
-                    ItemStack itemStack = itemOption.get();
-                    if (!player.getAbilities().creativeMode) {
-                        itemStack.decrement(1);
+                if (ModConfig.get().enableInvisibleFrames) {
+                    ItemFrameEntity frameEntity = (ItemFrameEntity) entity;
+
+                    Class items = Items.class;
+                    Item item;
+                    try {
+                        Field itemField = items.getField(ModConfig.get().invisibleFrameItem);
+                        item = (Item) itemField.get(null);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        item = Items.AMETHYST_SHARD;
                     }
-                    entity.setInvisible(true);
-                } else if (!player.isSneaking()) {
+
+                    Optional<ItemStack> itemOption = geItemHand(player, item);
+                    if (itemOption.isPresent() 
+                            && !entity.isInvisible() 
+                            && !frameEntity.getHeldItemStack().isOf(Items.AIR)) {
+                        if (!player.getAbilities().creativeMode) {
+                            ItemStack itemStack = itemOption.get();
+                            itemStack.decrement(1);
+                        }
+                        entity.setInvisible(true);
+                        return ActionResult.SUCCESS;
+                    }
+                }
+                if (!player.isSneaking()) {
                     BlockPos pos = entity.getBlockPos();
                     Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
                     handlePassthrough(player, world, hand, pos, oppositeDirection);
+                    return ActionResult.SUCCESS;
                 }
             }
             return ActionResult.PASS;
