@@ -23,14 +23,18 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class UseSignBlockCallback {
-    public static ActionResult onUseSignBlockCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
-        if (world.isClient) return ActionResult.PASS;
+    public static ActionResult onUseSignBlockCallback(PlayerEntity player, World world, Hand hand,
+            BlockHitResult hitResult) {
+        if (world.isClient)
+            return ActionResult.PASS;
         BlockPos pos = hitResult.getBlockPos();
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (!(blockEntity instanceof SignBlockEntity)) return ActionResult.PASS;
+        if (!(blockEntity instanceof SignBlockEntity))
+            return ActionResult.PASS;
         if (player.isSneaking()) {
             if (ImprovedSignsUtils.hasEmptyHand(player)) {
-                if (!(ModConfig.get().enableSignEdit) || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) {
+                if (!(ModConfig.get().enableSignEdit)
+                        || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) {
                     player.sendMessage(Text.literal("Sign is not editable"), true);
 
                     return ActionResult.PASS;
@@ -50,7 +54,7 @@ public class UseSignBlockCallback {
                 NbtCompound nbt = sign.getOrCreateNbt();
                 NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
                 SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
-                for(int i = 0; i < 4; i++) {
+                for (int i = 0; i < 4; i++) {
                     Text text = signBlock.getTextOnRow(i, false);
                     String string = Text.Serializer.toJson(text);
                     blockEntityTag.putString(String.format("Text%d", i + 1), string);
@@ -58,7 +62,7 @@ public class UseSignBlockCallback {
                 nbt.put("BlockEntityTag", blockEntityTag);
                 sign.setNbt(nbt);
                 player.sendMessage(Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
-            } else if (ModConfig.get().enableSignPassthrough) {
+            } else if (ModConfig.get().enableSignPassthrough && !ImprovedSignsUtils.isHoldingDye(player)) {
                 BlockState state = world.getBlockState(pos);
                 if (state.contains(HorizontalFacingBlock.FACING)) {
                     Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();

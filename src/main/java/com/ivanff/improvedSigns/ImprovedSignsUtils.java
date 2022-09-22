@@ -12,6 +12,7 @@ import net.minecraft.item.DecorationItem;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.SignItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -22,42 +23,47 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ImprovedSignsUtils {
-    public static void handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction oppositeDirection) {
-        if (isHoldingDye(player)) return;
-        BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(), oppositeDirection.getOffsetZ());
-        if (FlanCompat.checkPassthrough(world, player, hangingPos) == ActionResult.FAIL) return;
+    public static void handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos,
+            Direction oppositeDirection) {
+        BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(),
+                oppositeDirection.getOffsetZ());
+        if (FlanCompat.checkPassthrough(world, player, hangingPos) == ActionResult.FAIL)
+            return;
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
-        BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, pos, false); 
+        BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, pos, false);
         hangingState.getBlock().onUse(hangingState, world, hangingPos, player, hand, hangingHitResult);
     }
 
     public static boolean hasEmptyHand(PlayerEntity player) {
         Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
         Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
-        return !(mainHandItem instanceof BlockItem || mainHandItem instanceof DecorationItem || offHandItem instanceof BlockItem || offHandItem instanceof DecorationItem);
+        return !(mainHandItem instanceof BlockItem || mainHandItem instanceof DecorationItem
+                || offHandItem instanceof BlockItem || offHandItem instanceof DecorationItem);
     }
 
     public static Optional<ItemStack> geItemHand(PlayerEntity player, Item item) {
         ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
         ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
-        if (mainHandItem.isOf(item)) return Optional.of(mainHandItem);
-        if (offHandItem.isOf(item)) return Optional.of(offHandItem);
+        if (mainHandItem.isOf(item))
+            return Optional.of(mainHandItem);
+        if (offHandItem.isOf(item))
+            return Optional.of(offHandItem);
         return Optional.empty();
     }
 
     public static Optional<ItemStack> getSignHand(PlayerEntity player) {
         ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
         ItemStack offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND);
-        if (mainHandItem.getItem() instanceof SignItem) return Optional.of(mainHandItem);
-        if (offHandItem.getItem() instanceof SignItem) return Optional.of(offHandItem);
+        if (mainHandItem.getItem() instanceof SignItem)
+            return Optional.of(mainHandItem);
+        if (offHandItem.getItem() instanceof SignItem)
+            return Optional.of(offHandItem);
         return Optional.empty();
     }
 
-    private static boolean isHoldingDye(PlayerEntity player) {
+    public static boolean isHoldingDye(PlayerEntity player) {
         Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
-        Item offHandItem = player.getEquippedStack(EquipmentSlot.OFFHAND).getItem();
-        boolean isSquidInk = Item.getRawId(mainHandItem) == 808 || Item.getRawId(mainHandItem) == 808;
-        return mainHandItem instanceof DyeItem || offHandItem instanceof DyeItem || isSquidInk;
+        return mainHandItem instanceof DyeItem || mainHandItem == Items.GLOW_INK_SAC;
     }
 }
