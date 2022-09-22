@@ -16,13 +16,16 @@ public class ModConfig implements Config {
     public boolean enableSignPassthrough = true;
     public boolean enableSignRetain = true;
     public boolean enableSignCopy = true;
+    @Comment("This option will copy the target sign's color and glow. \n" +
+            "Disabled by default because it's technically duping dyes.")
+    public boolean retainDyeOnSignCopy = false;
 
     @Comment("==== Item Frames ===")
     public boolean enableFramePassthrough = true;
     public boolean enableInvisibleFrames = true;
     @Comment("Choose what item turns frames invisible. Supported Items:\n" +
-             "\tAMETHYST_SHARD\n" + 
-             "\tGLASS_PANE")
+            "\tAMETHYST_SHARD\n" +
+            "\tGLASS_PANE")
     public String invisibleFrameItem = "AMETHYST_SHARD";
 
     public static void init() {
@@ -35,7 +38,7 @@ public class ModConfig implements Config {
     public static ModConfig get() {
         return CONFIG;
     }
-    
+
     @Override
     public String getName() {
         return ImprovedSignsMod.MOD_ID;

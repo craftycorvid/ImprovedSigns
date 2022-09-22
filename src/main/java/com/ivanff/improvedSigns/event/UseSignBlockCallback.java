@@ -59,6 +59,9 @@ public class UseSignBlockCallback {
                     String string = Text.Serializer.toJson(text);
                     blockEntityTag.putString(String.format("Text%d", i + 1), string);
                 }
+                boolean retainDyeOnSignCopy = ModConfig.get().retainDyeOnSignCopy;
+                blockEntityTag.putBoolean("GlowingText", retainDyeOnSignCopy ? signBlock.isGlowingText() : false);
+                blockEntityTag.putString("Color", retainDyeOnSignCopy ? signBlock.getTextColor().getName() : "black");
                 nbt.put("BlockEntityTag", blockEntityTag);
                 sign.setNbt(nbt);
                 player.sendMessage(Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
