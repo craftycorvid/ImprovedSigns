@@ -3,7 +3,7 @@ package com.ivanff.improvedSigns;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ivanff.improvedSigns.compat.FlanCompat;
+// import com.ivanff.improvedSigns.compat.FlanCompat;
 import com.ivanff.improvedSigns.config.ModConfig;
 import com.ivanff.improvedSigns.event.UseItemFrameEntityCallback;
 import com.ivanff.improvedSigns.event.UseSignBlockCallback;
@@ -24,7 +24,7 @@ public class ImprovedSignsMod implements ModInitializer {
         LOGGER.info("Improved Signs Initializing");
         ModConfig.init();
         LootConditionTypes.register();
-        FlanCompat.register();
+        // FlanCompat.register();
 
         UseBlockCallback.EVENT.register(UseSignBlockCallback::onUseSignBlockCallback);
 

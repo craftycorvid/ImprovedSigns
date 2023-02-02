@@ -1,5 +1,5 @@
 package com.ivanff.improvedSigns.compat;
-
+/*
 import io.github.flemmli97.flan.api.ClaimHandler;
 import io.github.flemmli97.flan.api.data.IPermissionContainer;
 import io.github.flemmli97.flan.api.data.IPermissionStorage;
@@ -66,3 +66,4 @@ public class FlanCompat {
         return ActionResult.PASS;
     }
 }
+*/

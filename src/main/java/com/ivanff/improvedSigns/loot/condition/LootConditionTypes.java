@@ -2,7 +2,8 @@ package com.ivanff.improvedSigns.loot.condition;
 
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 public class LootConditionTypes
 {
@@ -10,6 +11,6 @@ public class LootConditionTypes
 
     public static void register()
     {
-        Registry.register(Registry.LOOT_CONDITION_TYPE, new Identifier("sign_text"), SIGN_TEXT);
+        Registry.register(Registries.LOOT_CONDITION_TYPE, new Identifier("sign_text"), SIGN_TEXT);
     }
 }

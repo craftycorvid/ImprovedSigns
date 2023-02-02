@@ -18,16 +18,17 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SignItem;
-import net.minecraft.item.WallStandingBlockItem;
+import net.minecraft.item.VerticallyAttachableBlockItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 @Mixin(SignItem.class)
-public class SignItemMixin extends WallStandingBlockItem {
-    public SignItemMixin(Block standingBlock, Block wallBlock, Settings settings) {
-        super(standingBlock, wallBlock, settings);
+public class SignItemMixin extends VerticallyAttachableBlockItem {
+    public SignItemMixin(Block standingBlock, Block wallBlock, Settings settings, Direction verticalAttachmentDirection) {
+        super(standingBlock, wallBlock, settings, verticalAttachmentDirection);
     }
 
     @Inject(method = "postPlacement", at = @At(value = "INVOKE",  target = "Lnet/minecraft/entity/player/PlayerEntity;openEditSignScreen(Lnet/minecraft/block/entity/SignBlockEntity;)V"), cancellable = true)

@@ -3,7 +3,7 @@ package com.ivanff.improvedSigns.event;
 import java.util.Optional;
 
 import com.ivanff.improvedSigns.ImprovedSignsUtils;
-import com.ivanff.improvedSigns.compat.FlanCompat;
+// import com.ivanff.improvedSigns.compat.FlanCompat;
 import com.ivanff.improvedSigns.config.ModConfig;
 import com.ivanff.improvedSigns.mixin.SignEntityMixin;
 
@@ -33,8 +33,8 @@ public class UseSignBlockCallback {
             return ActionResult.PASS;
         if (player.isSneaking()) {
             if (ImprovedSignsUtils.hasEmptyHand(player)) {
-                if (!(ModConfig.get().enableSignEdit)
-                        || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) {
+                if (!(ModConfig.get().enableSignEdit)) {
+                   //     || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) {
                     player.sendMessage(Text.literal("Sign is not editable"), true);
 
                     return ActionResult.PASS;
