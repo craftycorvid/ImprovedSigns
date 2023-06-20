@@ -24,7 +24,7 @@ public class ImprovedSignsMod implements ModInitializer {
         LOGGER.info("Improved Signs Initializing");
         ModConfig.init();
         LootConditionTypes.register();
-         FlanCompat.register();
+        FlanCompat.register();
 
         UseBlockCallback.EVENT.register(UseSignBlockCallback::onUseSignBlockCallback);
 
