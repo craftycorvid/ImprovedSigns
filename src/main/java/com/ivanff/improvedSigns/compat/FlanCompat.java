@@ -1,5 +1,5 @@
 package com.ivanff.improvedSigns.compat;
-/*
+
 import io.github.flemmli97.flan.api.ClaimHandler;
 import io.github.flemmli97.flan.api.data.IPermissionContainer;
 import io.github.flemmli97.flan.api.data.IPermissionStorage;
@@ -37,6 +37,16 @@ public class FlanCompat {
         return container.canInteract(player, type, pos);
     }
 
+    public static ActionResult checkModifyItemFrame(World world, PlayerEntity playerEntity, BlockPos pos) {
+        if (loader.isModLoaded("flan") && world instanceof ServerWorld serverWorld && playerEntity instanceof ServerPlayerEntity serverPlayerEntity) {
+            if (FlanCompat.canInteract(serverWorld, serverPlayerEntity, pos, PermissionRegistry.PLACE)) {
+                return ActionResult.PASS;
+            }
+            return ActionResult.FAIL;
+        }
+        return ActionResult.PASS;
+    }
+
     public static ActionResult checkEdit(World world, PlayerEntity playerEntity, BlockPos pos) {
         if (loader.isModLoaded("flan") && world instanceof ServerWorld serverWorld && playerEntity instanceof ServerPlayerEntity serverPlayerEntity) {
             if (FlanCompat.canInteract(serverWorld, serverPlayerEntity, pos, FlanCompat.EDITSIGN)) {
@@ -66,4 +76,3 @@ public class FlanCompat {
         return ActionResult.PASS;
     }
 }
-*/

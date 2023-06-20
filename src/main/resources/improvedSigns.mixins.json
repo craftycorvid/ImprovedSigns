@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractSignBlockMixin",
-    "SignBlockEntityMixin",
-    "SignEntityMixin",
     "SignItemMixin",
     "ItemFrameEntityMixin"
   ],

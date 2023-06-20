@@ -31,7 +31,7 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
         super(standingBlock, wallBlock, settings, verticalAttachmentDirection);
     }
 
-    @Inject(method = "postPlacement", at = @At(value = "INVOKE",  target = "Lnet/minecraft/entity/player/PlayerEntity;openEditSignScreen(Lnet/minecraft/block/entity/SignBlockEntity;)V"), cancellable = true)
+    @Inject(method = "postPlacement", at = @At(value = "INVOKE",  target = "Lnet/minecraft/block/AbstractSignBlock;openEditScreen(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/block/entity/SignBlockEntity;Z)V"), cancellable = true)
     protected void postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> info){
         NbtCompound compoundTag = stack.getNbt();
         if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
@@ -57,7 +57,7 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
     @Inject(
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/entity/player/PlayerEntity;openEditSignScreen(Lnet/minecraft/block/entity/SignBlockEntity;)V"
+            target = "Lnet/minecraft/block/AbstractSignBlock;openEditScreen(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/block/entity/SignBlockEntity;Z)V"
         ),
         method = "postPlacement",
         cancellable = true)

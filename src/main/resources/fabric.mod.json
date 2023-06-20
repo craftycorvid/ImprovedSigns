@@ -16,6 +16,9 @@
   "icon": "assets/improved_signs/icon.png",
   "environment": "*",
   "entrypoints": {
+    "fabric-datagen": [
+      "com.ivanff.improvedSigns.datagen.DatagenInitializer"
+    ],
     "main": [
       "com.ivanff.improvedSigns.ImprovedSignsMod"
     ],
@@ -28,6 +31,6 @@
   "depends": {
     "fabricloader": ">=0.14.8",
     "fabric": "*",
-    "minecraft": "1.19.x"
+    "minecraft": ["1.20", "1.20.1"]
   }
 }

@@ -30,14 +30,8 @@ public abstract class AbstractSignBlockMixin extends BlockWithEntity {
         if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
             NbtCompound compoundTag2 = compoundTag.getCompound("BlockEntityTag");
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof SignBlockEntity) {
-                for(int i = 0; i < 4; ++i) {
-                    String string = compoundTag2.getString("Text" + (i + 1));
-                    Text text = Text.Serializer.fromJson(string.isEmpty() ? "\"\"" : string);
-                    ((SignBlockEntity) blockEntity).setTextOnRow(i, text);
-                }
-                ((SignBlockEntity) blockEntity).setTextColor(DyeColor.byName(compoundTag2.getString("Color"), DyeColor.BLACK));
-                ((SignBlockEntity) blockEntity).setGlowingText(compoundTag2.getBoolean("GlowingText"));
+            if (blockEntity instanceof SignBlockEntity signBlockEntity) {
+                signBlockEntity.readNbt(compoundTag2);
             }
         }
     }

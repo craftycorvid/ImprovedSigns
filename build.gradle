@@ -12,7 +12,34 @@ version = "${project.mod_version}"
 group = project.maven_group
 
 def secretsProperties = new Properties()
-file('secrets.properties').withInputStream { secretsProperties.load(it) }
+def secretsFile = file('secrets.properties')
+if (secretsFile.exists()) {
+	secretsFile.withInputStream { secretsProperties.load(it) }
+}
+
+loom {
+	runs {
+		datagen {
+			inherit server
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+			vmArg "-Dfabric-api.datagen.modid=improved-signs"
+
+			runDir "build/datagen"
+		}
+	}
+}
+
+sourceSets {
+	main {
+		resources {
+			srcDirs += [
+					'src/main/generated'
+			]
+		}
+	}
+}
 
 repositories {
 	maven { url 'https://jitpack.io' }
@@ -35,14 +62,9 @@ dependencies {
 
 	include("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
     modImplementation("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
-/*
-	modCompileOnly("io.github.flemmli97:flan:${flan_version}:fabric-api") {
-		transitive = false //Remove this if you want to have all those optional dependencies
-	}
-	modRuntimeOnly("io.github.flemmli97:flan:${flan_version}:fabric") {
-		transitive = false //Remove this if you want to have all those optional dependencies
-	}
-*/
+
+	modImplementation files("./libs/flan-1.20-1.8.4.3-fabric.jar")
+
 	modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
@@ -74,38 +96,42 @@ jar {
 	from "LICENSE"
 }
 
-curseforge {
-  apiKey = secretsProperties['curseApiKey']
-  project {
-    id = project.curseforge_id
-    changelog = project.changelog
-    releaseType = 'release'
-	addGameVersion "Fabric"
-	addGameVersion "Quilt"
-    addGameVersion project.minecraft_version
-	relations {
-		requiredDependency 'fabric-api'
-	}
-
-    mainArtifact(remapJar) {
-      displayName = "Improved Signs $project.mod_version"
-    }
-  }
-  options {
-	  forgeGradleIntegration = false
-  }
-}
-
 import com.modrinth.minotaur.dependencies.ModDependency
 
-modrinth {
-    token = secretsProperties['modrinthToken']
-    projectId = project.modrinth_id
-	versionName = "Improved Signs $project.mod_version for MC $project.minecraft_version"
-    versionNumber = "mc$project.minecraft_version-v$project.mod_version"
-	versionType = 'RELEASE'
-    uploadFile = remapJar
-	changelog = project.changelog
-    gameVersions = [project.minecraft_version]
-    loaders = ['fabric','quilt']
+if (secretsProperties.hasProperty('curseApiKey')) {
+	curseforge {
+		apiKey = secretsProperties['curseApiKey']
+		project {
+			id = project.curseforge_id
+			changelog = project.changelog
+			releaseType = 'release'
+			addGameVersion "Fabric"
+			addGameVersion "Quilt"
+			addGameVersion project.minecraft_version
+			relations {
+				requiredDependency 'fabric-api'
+			}
+
+			mainArtifact(remapJar) {
+				displayName = "Improved Signs $project.mod_version"
+			}
+		}
+		options {
+			forgeGradleIntegration = false
+		}
+	}
+}
+
+if (secretsProperties.hasProperty('modrinthToken')) {
+	modrinth {
+		token = secretsProperties['modrinthToken']
+		projectId = project.modrinth_id
+		versionName = "Improved Signs $project.mod_version for MC $project.minecraft_version"
+		versionNumber = "mc$project.minecraft_version-v$project.mod_version"
+		versionType = 'RELEASE'
+		uploadFile = remapJar
+		changelog = project.changelog
+		gameVersions = [project.minecraft_version]
+		loaders = ['fabric','quilt']
+	}
 }

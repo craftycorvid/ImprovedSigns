@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 import com.ivanff.improvedSigns.ImprovedSignsUtils;
+import com.ivanff.improvedSigns.compat.FlanCompat;
 import com.ivanff.improvedSigns.config.ModConfig;
 
 import net.minecraft.entity.Entity;
@@ -22,7 +23,7 @@ import net.minecraft.world.World;
 public class UseItemFrameEntityCallback {
     public static ActionResult onUseItemFrameEntityCallback(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         if (entity instanceof ItemFrameEntity) {
-            if (ModConfig.get().enableInvisibleFrames) {
+            if (ModConfig.get().enableInvisibleFrames && FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL) {
                 ItemFrameEntity frameEntity = (ItemFrameEntity) entity;
 
                 Class items = Items.class;

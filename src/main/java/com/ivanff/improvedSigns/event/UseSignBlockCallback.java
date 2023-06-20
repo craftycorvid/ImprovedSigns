@@ -1,19 +1,25 @@
 package com.ivanff.improvedSigns.event;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import com.ivanff.improvedSigns.ImprovedSignsUtils;
-// import com.ivanff.improvedSigns.compat.FlanCompat;
+import com.ivanff.improvedSigns.compat.FlanCompat;
 import com.ivanff.improvedSigns.config.ModConfig;
-import com.ivanff.improvedSigns.mixin.SignEntityMixin;
 
+import net.minecraft.block.AbstractSignBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.SignText;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SignChangingItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -29,51 +35,60 @@ public class UseSignBlockCallback {
             return ActionResult.PASS;
         BlockPos pos = hitResult.getBlockPos();
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (!(blockEntity instanceof SignBlockEntity))
+        if (!(blockEntity instanceof SignBlockEntity signBlockEntity))
             return ActionResult.PASS;
-        if (player.isSneaking()) {
-            if (ImprovedSignsUtils.hasEmptyHand(player)) {
-                if (!(ModConfig.get().enableSignEdit)) {
-                   //     || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL) {
-                    player.sendMessage(Text.literal("Sign is not editable"), true);
 
-                    return ActionResult.PASS;
-                }
-                SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
-                ((SignEntityMixin) signBlock).setSignEditable(true);
-                if (signBlock.isEditable()) {
-                    player.openEditSignScreen(signBlock);
-                } else {
-                    player.sendMessage(Text.literal("Sign is not editable"), true);
-                }
-            }
-        } else {
-            Optional<ItemStack> signOption = ImprovedSignsUtils.getSignHand(player);
-            if (ModConfig.get().enableSignCopy && signOption.isPresent()) {
-                ItemStack sign = signOption.get();
+        if (hand.equals(Hand.OFF_HAND)) return ActionResult.PASS;
+
+        boolean front = signBlockEntity.isPlayerFacingFront(player);
+        SignText signText = signBlockEntity.getText(front);
+
+        if(!player.isSneaking()) {
+            Optional<ItemStack> signHand = ImprovedSignsUtils.getSignHand(player);
+            if (ModConfig.get().enableSignCopy && signHand.isPresent()) {
+                ItemStack sign = signHand.get();
                 NbtCompound nbt = sign.getOrCreateNbt();
                 NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
-                SignBlockEntity signBlock = (SignBlockEntity) blockEntity;
-                for (int i = 0; i < 4; i++) {
-                    Text text = signBlock.getTextOnRow(i, false);
-                    String string = Text.Serializer.toJson(text);
-                    blockEntityTag.putString(String.format("Text%d", i + 1), string);
-                }
-                boolean retainDyeOnSignCopy = ModConfig.get().retainDyeOnSignCopy;
-                blockEntityTag.putBoolean("GlowingText", retainDyeOnSignCopy ? signBlock.isGlowingText() : false);
-                blockEntityTag.putString("Color", retainDyeOnSignCopy ? signBlock.getTextColor().getName() : "black");
-                nbt.put("BlockEntityTag", blockEntityTag);
-                sign.setNbt(nbt);
-                player.sendMessage(Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
-            } else if (ModConfig.get().enableSignPassthrough && !ImprovedSignsUtils.isHoldingDye(player)) {
-                BlockState state = world.getBlockState(pos);
-                if (state.contains(HorizontalFacingBlock.FACING)) {
-                    Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
-                    ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
-                }
+                SignText.CODEC.encodeStart(NbtOps.INSTANCE, signText).result().ifPresent(textNbt -> {
+                    NbtCompound text = (NbtCompound) textNbt;
+                    if (!ModConfig.get().retainDyeOnSignCopy) {
+                        text.putBoolean("GlowingText", false);
+                        text.putString("Color", "black");
+                    }
+                    blockEntityTag.put(front ? "front_text" : "back_text", text);
+                    nbt.put("BlockEntityTag", blockEntityTag);
+                    sign.setNbt(nbt);
+                    player.sendMessage(Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
+                });
+                return ActionResult.SUCCESS;
+            }
+
+            BlockState state = world.getBlockState(pos);
+            if (state.contains(HorizontalFacingBlock.FACING)) {
+                Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
+                ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
+            }
+            return ActionResult.SUCCESS;
+        }
+
+        BlockState bs = world.getBlockState(pos);
+        if (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof SignChangingItem signChangingItem && signChangingItem.canUseOnSignText(signText, player) && signChangingItem.useOnSign(world, signBlockEntity, front, player)) {
+            return ActionResult.SUCCESS;
+        }
+
+        if (ImprovedSignsUtils.hasEmptyHand(player)) {
+            if (!ModConfig.get().enableSignEdit || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL || signBlockEntity.isWaxed()) {
+                world.playSound(player, signBlockEntity.getPos(), SoundEvents.BLOCK_SIGN_WAXED_INTERACT_FAIL, SoundCategory.BLOCKS);
+                return ActionResult.FAIL;
+            }
+
+            UUID uuid = signBlockEntity.getEditor();
+            if (world.getBlockState(pos).getBlock() instanceof AbstractSignBlock signBlock && (uuid == null || uuid.equals(player.getUuid()))) {
+                signBlock.openEditScreen(player, signBlockEntity, front);
                 return ActionResult.SUCCESS;
             }
         }
+
         return ActionResult.PASS;
     }
 }
