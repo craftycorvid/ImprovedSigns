@@ -2,14 +2,11 @@ package com.ivanff.improvedSigns;
 
 import java.util.Optional;
 
-// import com.ivanff.improvedSigns.compat.FlanCompat;
-
 import com.ivanff.improvedSigns.compat.FlanCompat;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-// import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
