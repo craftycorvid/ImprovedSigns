@@ -21,3 +21,5 @@ bin/
 run/
 
 secrets.properties
+
+libs/

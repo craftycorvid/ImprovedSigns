@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:spruce_sign"
+    }
+  ],
+  "result": {
+    "item": "minecraft:spruce_sign"
+  }
+}

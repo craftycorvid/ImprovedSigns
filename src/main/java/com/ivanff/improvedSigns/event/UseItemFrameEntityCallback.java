@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 import com.ivanff.improvedSigns.ImprovedSignsUtils;
+import com.ivanff.improvedSigns.compat.FlanCompat;
 import com.ivanff.improvedSigns.config.ModConfig;
 
 import net.minecraft.entity.Entity;
@@ -21,38 +22,47 @@ import net.minecraft.world.World;
 
 public class UseItemFrameEntityCallback {
     public static ActionResult onUseItemFrameEntityCallback(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (entity instanceof ItemFrameEntity) {
-            if (ModConfig.get().enableInvisibleFrames) {
-                ItemFrameEntity frameEntity = (ItemFrameEntity) entity;
+        if (world.isClient)
+            return ActionResult.PASS;
+        if (!(entity instanceof ItemFrameEntity frameEntity))
+            return ActionResult.PASS;
 
-                Class items = Items.class;
-                Item item;
-                try {
-                    Field itemField = items.getField(ModConfig.get().invisibleFrameItem);
-                    item = (Item) itemField.get(null);
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    item = Items.AMETHYST_SHARD;
-                }
+        if (!hand.equals(Hand.MAIN_HAND))
+            return ActionResult.FAIL;
 
-                Optional<ItemStack> itemOption = ImprovedSignsUtils.geItemHand(player, item);
-                if (itemOption.isPresent() 
-                        && !entity.isInvisible() 
-                        && !frameEntity.getHeldItemStack().isOf(Items.AIR)) {
-                    if (!player.getAbilities().creativeMode) {
-                        ItemStack itemStack = itemOption.get();
-                        itemStack.decrement(1);
-                    }
-                    entity.setInvisible(true);
-                    return ActionResult.SUCCESS;
-                }
+        if (player.isSneaking() && ModConfig.get().enableInvisibleFrames && FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL) {
+            Item item;
+            try {
+                Field itemField = Items.class.getField(ModConfig.get().invisibleFrameItem);
+                item = (Item) itemField.get(null);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                item = Items.AMETHYST_SHARD;
             }
-            if (ModConfig.get().enableFramePassthrough && !player.isSneaking()) {
-                BlockPos pos = entity.getBlockPos();
-                Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
-                ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
+
+            Optional<ItemStack> itemOption = ImprovedSignsUtils.geItemHand(player, item);
+            if (itemOption.isPresent()) {
+                if (entity.isInvisible()) {
+                    return ActionResult.FAIL;
+                }
+                if (frameEntity.getHeldItemStack().isOf(Items.AIR)) {
+                    return ActionResult.PASS;
+                }
+                if (!player.getAbilities().creativeMode) {
+                    ItemStack itemStack = itemOption.get();
+                    itemStack.decrement(1);
+                }
+                entity.setInvisible(true);
                 return ActionResult.SUCCESS;
             }
         }
+
+        if (ModConfig.get().enableFramePassthrough && !player.isSneaking()) {
+            BlockPos pos = entity.getBlockPos();
+            Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
+            ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
+            return ActionResult.SUCCESS;
+        }
+
         return ActionResult.PASS;
     }
 }

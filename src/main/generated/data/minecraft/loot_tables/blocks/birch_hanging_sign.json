@@ -1,0 +1,48 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "conditions": [
+                {
+                  "condition": "minecraft:sign_text"
+                }
+              ],
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "front_text",
+                  "target": "BlockEntityTag.front_text"
+                },
+                {
+                  "op": "replace",
+                  "source": "back_text",
+                  "target": "BlockEntityTag.back_text"
+                },
+                {
+                  "op": "replace",
+                  "source": "waxed",
+                  "target": "BlockEntityTag.waxed"
+                }
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "minecraft:birch_hanging_sign"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}
