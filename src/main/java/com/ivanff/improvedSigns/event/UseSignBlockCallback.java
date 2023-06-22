@@ -20,6 +20,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -27,6 +28,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 
 public class UseSignBlockCallback {
     public static ActionResult onUseSignBlockCallback(PlayerEntity player, World world, Hand hand,
@@ -72,7 +74,13 @@ public class UseSignBlockCallback {
         }
 
         BlockState bs = world.getBlockState(pos);
-        if (player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof SignChangingItem signChangingItem && signChangingItem.canUseOnSignText(signText, player) && signChangingItem.useOnSign(world, signBlockEntity, front, player)) {
+        ItemStack handItem = player.getStackInHand(Hand.MAIN_HAND);
+        if (handItem.getItem() instanceof SignChangingItem signChangingItem && signChangingItem.canUseOnSignText(signText, player) && signChangingItem.useOnSign(world, signBlockEntity, front, player)) {
+            if (!player.isCreative()) {
+                handItem.decrement(1);
+            }
+            world.emitGameEvent(GameEvent.BLOCK_CHANGE, signBlockEntity.getPos(), GameEvent.Emitter.of(player, signBlockEntity.getCachedState()));
+            player.incrementStat(Stats.USED.getOrCreateStat(handItem.getItem()));
             return ActionResult.SUCCESS;
         }
 
