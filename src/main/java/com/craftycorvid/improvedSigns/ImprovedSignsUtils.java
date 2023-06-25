@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +16,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ImprovedSignsUtils {
-    public static void handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos,
+    public static ActionResult handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos,
             Direction oppositeDirection) {
         BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(),
                 oppositeDirection.getOffsetZ());
@@ -23,8 +24,8 @@ public class ImprovedSignsUtils {
              return; */
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
-        BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, pos, false);
-        hangingState.onUse(world, player, hand, hangingHitResult);
+        BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, hangingPos, false);
+        return hangingState.onUse(world, player, hand, hangingHitResult);
     }
 
     public static boolean hasEmptyHand(PlayerEntity player) {

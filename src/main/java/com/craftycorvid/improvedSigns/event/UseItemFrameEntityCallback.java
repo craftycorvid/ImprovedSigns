@@ -59,8 +59,7 @@ public class UseItemFrameEntityCallback {
         if (ModConfig.get().enableFramePassthrough && !player.isSneaking()) {
             BlockPos pos = entity.getBlockPos();
             Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
-            ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
-            return ActionResult.SUCCESS;
+            return ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
         }
 
         return ActionResult.PASS;

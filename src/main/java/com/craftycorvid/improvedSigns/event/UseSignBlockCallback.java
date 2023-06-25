@@ -61,11 +61,14 @@ public class UseSignBlockCallback {
                 return ActionResult.SUCCESS;
             }
 
-            BlockState state = world.getBlockState(pos);
-            if (state.contains(HorizontalFacingBlock.FACING)) {
-                Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
-                ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
+            if (ModConfig.get().enableSignPassthrough) {
+                BlockState state = world.getBlockState(pos);
+                if (state.contains(HorizontalFacingBlock.FACING)) {
+                    Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
+                    return ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
+                }
             }
+
             return ActionResult.PASS;
         }
 
