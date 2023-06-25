@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.ivanff.improvedSigns.mixin",
+  "package": "com.craftycorvid.improvedSigns.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractSignBlockMixin",

@@ -1,4 +1,4 @@
-package com.ivanff.improvedSigns.loot.condition;
+package com.craftycorvid.improvedSigns.loot.condition;
 
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.util.Identifier;

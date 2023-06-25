@@ -1,4 +1,4 @@
-package com.ivanff.improvedSigns.mixin;
+package com.craftycorvid.improvedSigns.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.ivanff.improvedSigns.config.ModConfig;
+import com.craftycorvid.improvedSigns.config.ModConfig;
 
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;

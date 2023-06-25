@@ -4,7 +4,6 @@ This mod is only for Fabric/Quilt Servers(or Single-Player) and requires [Fabric
 [![Download on Modrinth](https://raw.githubusercontent.com/Prospector/badges/master/modrinth-badge-72h-padded.png)](https://modrinth.com/mod/improved-signs)
 
 ### Features
- - **Sign Editor:** Edit placed signs by shift(sneak) + right-click with an empty hand
  - **Sign & Item Frame Passthrough:** Access chests, shulker boxes, barrels, etc behind signs by right-clicking the sign
     - Interact with Item Frames normally by shift(sneak) + right-click
  - **Signs Retain** - Breaking a sign will retain that sign's text, color and glowing. Put the sign in a crafting window to reset it
@@ -14,7 +13,6 @@ This mod is only for Fabric/Quilt Servers(or Single-Player) and requires [Fabric
     - You can configure it to use Glass Panes instead
  - Stop Sign editor from opening when placing new signs
  - Flan compatibility for passthrough/editing
-    - EDITSIGN permission for allowing/disallowing editing of placed signs
  - All features are configurable in `config/improvedsigns.json5`
 
 ### Shout-outs

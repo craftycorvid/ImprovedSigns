@@ -1,11 +1,11 @@
-package com.ivanff.improvedSigns.event;
+package com.craftycorvid.improvedSigns.event;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-import com.ivanff.improvedSigns.ImprovedSignsUtils;
-import com.ivanff.improvedSigns.compat.FlanCompat;
-import com.ivanff.improvedSigns.config.ModConfig;
+import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
+// import com.craftycorvid.improvedSigns.compat.FlanCompat;
+import com.craftycorvid.improvedSigns.config.ModConfig;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -30,7 +30,7 @@ public class UseItemFrameEntityCallback {
         if (!hand.equals(Hand.MAIN_HAND))
             return ActionResult.FAIL;
 
-        if (player.isSneaking() && ModConfig.get().enableInvisibleFrames && FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL) {
+        if (player.isSneaking() && ModConfig.get().enableInvisibleFrames /*&& FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL*/) {
             Item item;
             try {
                 Field itemField = Items.class.getField(ModConfig.get().invisibleFrameItem);

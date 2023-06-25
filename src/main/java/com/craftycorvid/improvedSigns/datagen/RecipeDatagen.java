@@ -1,6 +1,6 @@
-package com.ivanff.improvedSigns.datagen;
+package com.craftycorvid.improvedSigns.datagen;
 
-import com.ivanff.improvedSigns.ImprovedSignsMod;
+import com.craftycorvid.improvedSigns.ImprovedSignsMod;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;

@@ -9,18 +9,18 @@
   ],
   "contributors": [],
   "contact": {
-    "sources": "https://github.com/Ivan0xFF/ImprovedSigns",
-    "issues": "https://github.com/Ivan0xFF/ImprovedSigns/issues"
+    "sources": "https://github.com/CraftyCorvid/ImprovedSigns",
+    "issues": "https://github.com/CraftyCorvid/ImprovedSigns/issues"
   },
   "license": "MIT",
   "icon": "assets/improved_signs/icon.png",
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
-      "com.ivanff.improvedSigns.datagen.DatagenInitializer"
+      "com.craftycorvid.improvedSigns.datagen.DatagenInitializer"
     ],
     "main": [
-      "com.ivanff.improvedSigns.ImprovedSignsMod"
+      "com.craftycorvid.improvedSigns.ImprovedSignsMod"
     ],
     "client": [],
     "server": []

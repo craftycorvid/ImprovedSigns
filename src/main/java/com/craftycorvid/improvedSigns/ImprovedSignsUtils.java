@@ -1,13 +1,12 @@
-package com.ivanff.improvedSigns;
+package com.craftycorvid.improvedSigns;
 
 import java.util.Optional;
 
-import com.ivanff.improvedSigns.compat.FlanCompat;
+// import com.craftycorvid.improvedSigns.compat.FlanCompat;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -20,12 +19,12 @@ public class ImprovedSignsUtils {
             Direction oppositeDirection) {
         BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(),
                 oppositeDirection.getOffsetZ());
-         if (FlanCompat.checkPassthrough(world, player, hangingPos) == ActionResult.FAIL)
-             return;
+         /* if (FlanCompat.checkPassthrough(world, player, hangingPos) == ActionResult.FAIL)
+             return; */
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
         BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, pos, false);
-        hangingState.getBlock().onUse(hangingState, world, hangingPos, player, hand, hangingHitResult);
+        hangingState.onUse(world, player, hand, hangingHitResult);
     }
 
     public static boolean hasEmptyHand(PlayerEntity player) {

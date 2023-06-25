@@ -1,6 +1,6 @@
-package com.ivanff.improvedSigns.config;
+package com.craftycorvid.improvedSigns.config;
 
-import com.ivanff.improvedSigns.ImprovedSignsMod;
+import com.craftycorvid.improvedSigns.ImprovedSignsMod;
 
 import draylar.omegaconfig.OmegaConfig;
 import draylar.omegaconfig.api.Comment;
@@ -11,8 +11,7 @@ public class ModConfig implements Config {
     private static ModConfig CONFIG;
 
     @Comment("==== Signs ===")
-    public boolean disableSignEditOnPlace = true;
-    public boolean enableSignEdit = true;
+    public boolean disableSignEditOnPlace = false;
     public boolean enableSignPassthrough = true;
     public boolean enableSignRetain = true;
     public boolean enableSignCopy = true;

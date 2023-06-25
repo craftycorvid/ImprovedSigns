@@ -1,4 +1,4 @@
-package com.ivanff.improvedSigns.datagen;
+package com.craftycorvid.improvedSigns.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

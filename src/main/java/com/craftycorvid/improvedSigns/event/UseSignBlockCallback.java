@@ -1,13 +1,11 @@
-package com.ivanff.improvedSigns.event;
+package com.craftycorvid.improvedSigns.event;
 
 import java.util.Optional;
-import java.util.UUID;
 
-import com.ivanff.improvedSigns.ImprovedSignsUtils;
-import com.ivanff.improvedSigns.compat.FlanCompat;
-import com.ivanff.improvedSigns.config.ModConfig;
+import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
+// import com.craftycorvid.improvedSigns.compat.FlanCompat;
+import com.craftycorvid.improvedSigns.config.ModConfig;
 
-import net.minecraft.block.AbstractSignBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -18,8 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SignChangingItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -70,10 +66,9 @@ public class UseSignBlockCallback {
                 Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
                 ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
             }
-            return ActionResult.SUCCESS;
+            return ActionResult.PASS;
         }
 
-        BlockState bs = world.getBlockState(pos);
         ItemStack handItem = player.getStackInHand(Hand.MAIN_HAND);
         if (handItem.getItem() instanceof SignChangingItem signChangingItem && signChangingItem.canUseOnSignText(signText, player) && signChangingItem.useOnSign(world, signBlockEntity, front, player)) {
             if (!player.isCreative()) {
@@ -82,19 +77,6 @@ public class UseSignBlockCallback {
             world.emitGameEvent(GameEvent.BLOCK_CHANGE, signBlockEntity.getPos(), GameEvent.Emitter.of(player, signBlockEntity.getCachedState()));
             player.incrementStat(Stats.USED.getOrCreateStat(handItem.getItem()));
             return ActionResult.SUCCESS;
-        }
-
-        if (ImprovedSignsUtils.hasEmptyHand(player)) {
-            if (!ModConfig.get().enableSignEdit || FlanCompat.checkEdit(world, player, pos) == ActionResult.FAIL || signBlockEntity.isWaxed()) {
-                world.playSound(player, signBlockEntity.getPos(), SoundEvents.BLOCK_SIGN_WAXED_INTERACT_FAIL, SoundCategory.BLOCKS);
-                return ActionResult.FAIL;
-            }
-
-            UUID uuid = signBlockEntity.getEditor();
-            if (world.getBlockState(pos).getBlock() instanceof AbstractSignBlock signBlock && (uuid == null || uuid.equals(player.getUuid()))) {
-                signBlock.openEditScreen(player, signBlockEntity, front);
-                return ActionResult.SUCCESS;
-            }
         }
 
         return ActionResult.PASS;

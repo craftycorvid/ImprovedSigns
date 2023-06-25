@@ -1,9 +1,9 @@
-package com.ivanff.improvedSigns.loot.condition;
+package com.craftycorvid.improvedSigns.loot.condition;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import com.ivanff.improvedSigns.config.ModConfig;
+import com.craftycorvid.improvedSigns.config.ModConfig;
 
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.loot.condition.LootCondition;

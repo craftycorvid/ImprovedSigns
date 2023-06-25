@@ -1,6 +1,7 @@
-package com.ivanff.improvedSigns.mixin;
+package com.craftycorvid.improvedSigns.mixin;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,18 +9,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.ivanff.improvedSigns.config.ModConfig;
+import com.craftycorvid.improvedSigns.config.ModConfig;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.SignText;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SignItem;
 import net.minecraft.item.VerticallyAttachableBlockItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -45,11 +48,41 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
         super.appendTooltip(stack, world, tooltip, context);
         NbtCompound compoundTag = stack.getNbt();
         if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
-            NbtCompound compoundTag2 = compoundTag.getCompound("BlockEntityTag");
-            for(int i = 0; i < 4; ++i) {
-                String string = compoundTag2.getString("Text" + (i + 1));
-                Text text = Text.Serializer.fromJson(string.isEmpty() ? "\"\"" : string);
-                tooltip.add(text);
+            NbtCompound nbt = compoundTag.getCompound("BlockEntityTag");
+            Optional<Text[]> front = Optional.empty();
+            Optional<Text[]> back = Optional.empty();
+
+            if (nbt.contains("front_text")) {
+                front = SignText.CODEC
+                        .parse(NbtOps.INSTANCE, nbt.getCompound("front_text"))
+                        .resultOrPartial(s -> {})
+                        .map(text -> text.getMessages(false));
+            }
+
+            if (nbt.contains("back_text")) {
+                back = SignText.CODEC
+                        .parse(NbtOps.INSTANCE, nbt.getCompound("back_text"))
+                        .resultOrPartial(s -> {})
+                        .map(text -> text.getMessages(false));
+            }
+
+            if (front.isEmpty() && back.isEmpty()) {
+                return;
+            }
+            if (!front.isEmpty()) {
+                Text[] tl = front.orElse(null);
+                tooltip.add(Text.literal("Front:"));
+                for (Text t : tl) {
+                    tooltip.add(t);
+                   
+                }
+            }
+            if (!back.isEmpty()) {
+                Text[] tl = back.orElse(null);
+                tooltip.add(Text.literal("Back:"));
+                for (Text t : tl) {
+                    tooltip.add(t);
+                }
             }
         }
     }

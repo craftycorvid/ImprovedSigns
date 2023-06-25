@@ -1,13 +1,13 @@
-package com.ivanff.improvedSigns;
+package com.craftycorvid.improvedSigns;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ivanff.improvedSigns.compat.FlanCompat;
-import com.ivanff.improvedSigns.config.ModConfig;
-import com.ivanff.improvedSigns.event.UseItemFrameEntityCallback;
-import com.ivanff.improvedSigns.event.UseSignBlockCallback;
-import com.ivanff.improvedSigns.loot.condition.LootConditionTypes;
+// import com.craftycorvid.improvedSigns.compat.FlanCompat;
+import com.craftycorvid.improvedSigns.config.ModConfig;
+import com.craftycorvid.improvedSigns.event.UseItemFrameEntityCallback;
+import com.craftycorvid.improvedSigns.event.UseSignBlockCallback;
+import com.craftycorvid.improvedSigns.loot.condition.LootConditionTypes;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -24,7 +24,7 @@ public class ImprovedSignsMod implements ModInitializer {
         LOGGER.info("Improved Signs Initializing");
         ModConfig.init();
         LootConditionTypes.register();
-        FlanCompat.register();
+        // FlanCompat.register();
 
         UseBlockCallback.EVENT.register(UseSignBlockCallback::onUseSignBlockCallback);
 
