@@ -18,5 +18,5 @@ This mod is only for Fabric/Quilt Servers(or Single-Player) and requires [Fabric
 ### Shout-outs
  - Original Sign Retain functionality merged from [umollu's Sign Retain](https://www.curseforge.com/minecraft/mc-mods/sign-retain)
  - Girafi for the idea for Passthrough Signs. Find their original mod for Forge [here](https://www.curseforge.com/minecraft/mc-mods/passthrough-signs)
- - Jarva for contributing several features to the mod, including Flan support
- - Everyone else that has [contributed](https://github.com/Ivan0xFF/ImprovedSigns/graphs/contributors)
+ - Jarva for many contributions to the mod
+ - Everyone else that has [contributed](https://github.com/CraftyCorvid/ImprovedSigns/graphs/contributors)

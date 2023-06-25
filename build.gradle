@@ -11,10 +11,11 @@ archivesBaseName = project.archives_base_name
 version = "${project.mod_version}"
 group = project.maven_group
 
-def secretsProperties = new Properties()
-def secretsFile = file('secrets.properties')
-if (secretsFile.exists()) {
-	secretsFile.withInputStream { secretsProperties.load(it) }
+if (file('secrets.gradle').exists()) {
+    apply from: 'secrets.gradle'
+} else {
+	project.ext.curseApiKey   = null
+	project.ext.modrinthToken = null
 }
 
 loom {
@@ -96,42 +97,46 @@ jar {
 	from "LICENSE"
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
-
-if (secretsProperties.hasProperty('curseApiKey')) {
-	curseforge {
-		apiKey = secretsProperties['curseApiKey']
-		project {
-			id = project.curseforge_id
-			changelog = project.changelog
-			releaseType = 'release'
-			addGameVersion "Fabric"
-			addGameVersion "Quilt"
-			addGameVersion project.minecraft_version
-			relations {
-				requiredDependency 'fabric-api'
-			}
-
-			mainArtifact(remapJar) {
-				displayName = "Improved Signs $project.mod_version"
-			}
+curseforge {
+	apiKey = curseApiKey
+	project {
+		id = project.curseforge_id
+		changelog = project.changelog
+		releaseType = 'release'
+		addGameVersion "Fabric"
+		addGameVersion "Quilt"
+		addGameVersion project.minecraft_version
+		relations {
+			requiredDependency 'fabric-api'
 		}
-		options {
-			forgeGradleIntegration = false
+
+		mainArtifact(remapJar) {
+			displayName = "Improved Signs $project.mod_version"
 		}
+	}
+	options {
+		forgeGradleIntegration = false
 	}
 }
+tasks.curseforge.onlyIf {
+   curseApiKey
+}
 
-if (secretsProperties.hasProperty('modrinthToken')) {
-	modrinth {
-		token = secretsProperties['modrinthToken']
-		projectId = project.modrinth_id
-		versionName = "Improved Signs $project.mod_version for MC $project.minecraft_version"
-		versionNumber = "mc$project.minecraft_version-v$project.mod_version"
-		versionType = 'RELEASE'
-		uploadFile = remapJar
-		changelog = project.changelog
-		gameVersions = [project.minecraft_version]
-		loaders = ['fabric','quilt']
-	}
+modrinth {
+	syncBodyFrom = rootProject.file("README.md").text
+	token = modrinthToken
+	projectId = project.modrinth_id
+	versionName = "Improved Signs $project.mod_version for MC $project.minecraft_version"
+	versionNumber = "mc$project.minecraft_version-v$project.mod_version"
+	versionType = 'RELEASE'
+	uploadFile = remapJar
+	changelog = project.changelog
+	gameVersions = [project.minecraft_version]
+	loaders = ['fabric','quilt']
+	dependencies {
+        required.project "fabric-api"
+    }
+}
+tasks.modrinth.onlyIf {
+   modrinthToken
 }

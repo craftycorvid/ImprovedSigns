@@ -20,6 +20,6 @@ bin/
 #fabric
 run/
 
-secrets.properties
+secrets.gradle
 
 libs/
