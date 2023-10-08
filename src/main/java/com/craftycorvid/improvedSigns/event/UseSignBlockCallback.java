@@ -43,13 +43,13 @@ public class UseSignBlockCallback {
 
         if(!player.isSneaking()) {
             Optional<ItemStack> signHand = ImprovedSignsUtils.getSignHand(player);
-            if (ModConfig.get().enableSignCopy && signHand.isPresent()) {
+            if (ModConfig.enableSignCopy && signHand.isPresent()) {
                 ItemStack sign = signHand.get();
                 NbtCompound nbt = sign.getOrCreateNbt();
                 NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
                 SignText.CODEC.encodeStart(NbtOps.INSTANCE, signText).result().ifPresent(textNbt -> {
                     NbtCompound text = (NbtCompound) textNbt;
-                    if (!ModConfig.get().retainDyeOnSignCopy) {
+                    if (!ModConfig.retainDyeOnSignCopy) {
                         text.putBoolean("GlowingText", false);
                         text.putString("Color", "black");
                     }
@@ -61,7 +61,7 @@ public class UseSignBlockCallback {
                 return ActionResult.SUCCESS;
             }
 
-            if (ModConfig.get().enableSignPassthrough) {
+            if (ModConfig.enableSignPassthrough) {
                 BlockState state = world.getBlockState(pos);
                 if (state.contains(HorizontalFacingBlock.FACING)) {
                     Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();

@@ -1,0 +1,21 @@
+{
+  "improved-signs.midnightconfig.title": "Improved Signs Configuration",
+  "improved-signs.midnightconfig.sectionSigns": "SIGNS",
+  "improved-signs.midnightconfig.disableSignEditOnPlace": "Place Sign Edit Window Disabled",
+  "improved-signs.midnightconfig.enableSignPassthrough": "Sign Passthrough to Inventory",
+  "improved-signs.midnightconfig.enableSignPassthrough.tooltip": "When clicking a sign hanging on an inventory block, the click passes through the sign and interacts with the inventory. \nUse shift-click to force interacting with the sign",
+  "improved-signs.midnightconfig.enableSignRetain": "Retain Sign Text on Break",
+  "improved-signs.midnightconfig.enableSignRetain.tooltip": "When breaking a sign, the item will retain the text and dyed colors.",
+  "improved-signs.midnightconfig.enableSignCopy": "Copy Sign Text",
+  "improved-signs.midnightconfig.enableSignCopy.tooltip": "Click the source sign with a stack of signs in hand to copy the text on the clicked side.",
+  "improved-signs.midnightconfig.retainDyeOnSignCopy": "Copy Sign Dyed Colors",
+  "improved-signs.midnightconfig.retainDyeOnSignCopy.tooltip": "This option will copy the target sign's color and glow. \nDisabled by default because it's technically duping dyes.",
+
+  "improved-signs.midnightconfig.sectionItemFrames": "ITEM FRAMES",
+  "improved-signs.midnightconfig.enableFramePassthrough": "Item Frame Passthrough to Inventory",
+  "improved-signs.midnightconfig.enableFramePassthrough.tooltip": "When clicking an item frame hanging on an inventory block, the click passes through the item frame and interacts with the inventory. \nUse shift-click to force interacting with the item frame",
+  "improved-signs.midnightconfig.enableInvisibleFrames": "Enable Making Item Frames Invisible",
+  "improved-signs.midnightconfig.invisibleFrameItem": "Item Used to Make Item Frames Invisible",
+  "improved-signs.midnightconfig.enum.InvisibleFrameEnum.AMETHYST_SHARD": "Amethyst Shard",
+  "improved-signs.midnightconfig.enum.InvisibleFrameEnum.GLASS_PANE": "Glass Pane"
+}

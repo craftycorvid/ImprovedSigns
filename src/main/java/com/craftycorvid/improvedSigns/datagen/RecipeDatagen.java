@@ -4,6 +4,7 @@ import com.craftycorvid.improvedSigns.ImprovedSignsMod;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
+import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Item;
@@ -20,7 +21,7 @@ public class RecipeDatagen extends FabricRecipeProvider {
     }
 
     @Override
-    public void generate(Consumer<RecipeJsonProvider> exporter) {
+    public void generate(RecipeExporter exporter) {
         generateClearSignRecipe(exporter, Items.OAK_SIGN);
         generateClearSignRecipe(exporter, Items.OAK_HANGING_SIGN);
         generateClearSignRecipe(exporter, Items.SPRUCE_SIGN);
@@ -45,7 +46,7 @@ public class RecipeDatagen extends FabricRecipeProvider {
         generateClearSignRecipe(exporter, Items.WARPED_HANGING_SIGN);
     }
 
-    public void generateClearSignRecipe(Consumer<RecipeJsonProvider> exporter, Item sign) {
+    public void generateClearSignRecipe(RecipeExporter exporter, Item sign) {
         ShapelessRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, sign).input(sign).criterion("has_sign", InventoryChangedCriterion.Conditions.items(sign)).offerTo(exporter, new Identifier(ImprovedSignsMod.MOD_ID, "reset_" + Registries.ITEM.getId(sign).getPath()));
     }
 }

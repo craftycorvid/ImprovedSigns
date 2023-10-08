@@ -25,7 +25,7 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntity {
 
     @Inject(at = @At("HEAD"), method = "interact", cancellable = true)
     void onSetRotation(final PlayerEntity player, final Hand hand, final CallbackInfoReturnable<ActionResult> info) {
-        if (ModConfig.get().enableFramePassthrough && !player.isSneaking()) {
+        if (ModConfig.enableFramePassthrough && !player.isSneaking()) {
             info.setReturnValue(ActionResult.FAIL);
         }
     }

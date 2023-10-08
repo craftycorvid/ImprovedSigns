@@ -95,6 +95,6 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
         method = "postPlacement",
         cancellable = true)
     private void onPlacement(final BlockPos pos, final World world, final PlayerEntity player, final ItemStack stack, final BlockState state, final CallbackInfoReturnable<Boolean> info) {
-        if (ModConfig.get().disableSignEditOnPlace) info.cancel();
+        if (ModConfig.disableSignEditOnPlace) info.cancel();
     }
 }
