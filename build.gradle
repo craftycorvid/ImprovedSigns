@@ -99,7 +99,7 @@ jar {
 }
 
 curseforge {
-	//apiKey = curseApiKey
+	apiKey = curseApiKey
 	project {
 		id = project.curseforge_id
 		changelog = project.changelog
