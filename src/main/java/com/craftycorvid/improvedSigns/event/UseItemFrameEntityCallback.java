@@ -30,13 +30,16 @@ public class UseItemFrameEntityCallback {
         if (!hand.equals(Hand.MAIN_HAND))
             return ActionResult.FAIL;
 
-        if (player.isSneaking() && ModConfig.get().enableInvisibleFrames /*&& FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL*/) {
+        if (player.isSneaking() && ModConfig.enableInvisibleFrames /*&& FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL*/) {
             Item item;
-            try {
-                Field itemField = Items.class.getField(ModConfig.get().invisibleFrameItem);
-                item = (Item) itemField.get(null);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                item = Items.AMETHYST_SHARD;
+            switch(ModConfig.invisibleFrameItem) {
+               case GLASS_PANE:
+                   item = Items.GLASS_PANE;
+                   break;
+               default:
+               case AMETHYST_SHARD:
+                    item = Items.AMETHYST_SHARD;
+                    break;
             }
 
             Optional<ItemStack> itemOption = ImprovedSignsUtils.geItemHand(player, item);
@@ -56,7 +59,7 @@ public class UseItemFrameEntityCallback {
             }
         }
 
-        if (ModConfig.get().enableFramePassthrough && !player.isSneaking()) {
+        if (ModConfig.enableFramePassthrough && !player.isSneaking()) {
             BlockPos pos = entity.getBlockPos();
             Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
             return ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
