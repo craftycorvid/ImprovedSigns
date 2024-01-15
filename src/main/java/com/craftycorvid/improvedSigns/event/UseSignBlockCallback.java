@@ -50,8 +50,8 @@ public class UseSignBlockCallback {
                 SignText.CODEC.encodeStart(NbtOps.INSTANCE, signText).result().ifPresent(textNbt -> {
                     NbtCompound text = (NbtCompound) textNbt;
                     if (!ModConfig.retainDyeOnSignCopy) {
-                        text.putBoolean("GlowingText", false);
-                        text.putString("Color", "black");
+                        text.putBoolean("has_glowing_text", false);
+                        text.putString("color", "black");
                     }
                     blockEntityTag.put(front ? "front_text" : "back_text", text);
                     nbt.put("BlockEntityTag", blockEntityTag);
