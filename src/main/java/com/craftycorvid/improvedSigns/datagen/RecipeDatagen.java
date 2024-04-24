@@ -1,5 +1,7 @@
 package com.craftycorvid.improvedSigns.datagen;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.craftycorvid.improvedSigns.ImprovedSignsMod;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -10,11 +12,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 public class RecipeDatagen extends FabricRecipeProvider {
-    public RecipeDatagen(FabricDataOutput dataOutput) {
-        super(dataOutput);
+    public RecipeDatagen(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+        super(dataOutput, registriesFuture);
     }
 
     @Override

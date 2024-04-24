@@ -1,6 +1,5 @@
 package com.craftycorvid.improvedSigns.event;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 
 import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
@@ -30,7 +29,7 @@ public class UseItemFrameEntityCallback {
         if (!hand.equals(Hand.MAIN_HAND))
             return ActionResult.FAIL;
 
-        if (player.isSneaking() && ModConfig.enableInvisibleFrames /*&& FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL*/) {
+        if (ModConfig.enableInvisibleFrames && player.isSneaking() /*&& FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL*/) {
             Item item;
             switch(ModConfig.invisibleFrameItem) {
                case GLASS_PANE:
@@ -42,7 +41,7 @@ public class UseItemFrameEntityCallback {
                     break;
             }
 
-            Optional<ItemStack> itemOption = ImprovedSignsUtils.geItemHand(player, item);
+            Optional<ItemStack> itemOption = ImprovedSignsUtils.getItemHand(player, item);
             if (itemOption.isPresent()) {
                 if (entity.isInvisible()) {
                     return ActionResult.FAIL;
@@ -62,7 +61,7 @@ public class UseItemFrameEntityCallback {
         if (ModConfig.enableFramePassthrough && !player.isSneaking()) {
             BlockPos pos = entity.getBlockPos();
             Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
-            return ImprovedSignsUtils.handlePassthrough(player, world, hand, pos, oppositeDirection);
+            return ImprovedSignsUtils.handlePassthrough(player, world, pos, oppositeDirection);
         }
 
         return ActionResult.PASS;

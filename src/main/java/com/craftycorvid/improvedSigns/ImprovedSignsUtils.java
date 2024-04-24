@@ -8,7 +8,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -16,7 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ImprovedSignsUtils {
-    public static ActionResult handlePassthrough(PlayerEntity player, World world, Hand hand, BlockPos pos,
+    public static ActionResult handlePassthrough(PlayerEntity player, World world, BlockPos pos,
             Direction oppositeDirection) {
         BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(),
                 oppositeDirection.getOffsetZ());
@@ -25,15 +24,10 @@ public class ImprovedSignsUtils {
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
         BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, hangingPos, false);
-        return hangingState.onUse(world, player, hand, hangingHitResult);
+        return hangingState.onUse(world, player, hangingHitResult);
     }
 
-    public static boolean hasEmptyHand(PlayerEntity player) {
-        Item mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND).getItem();
-        return !(mainHandItem instanceof BlockItem || mainHandItem instanceof DecorationItem);
-    }
-
-    public static Optional<ItemStack> geItemHand(PlayerEntity player, Item item) {
+    public static Optional<ItemStack> getItemHand(PlayerEntity player, Item item) {
         ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
         if (mainHandItem.isOf(item))
             return Optional.of(mainHandItem);

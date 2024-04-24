@@ -16,7 +16,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.SignText;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SignItem;
@@ -36,33 +38,33 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
 
     @Inject(method = "postPlacement", at = @At(value = "INVOKE",  target = "Lnet/minecraft/block/AbstractSignBlock;openEditScreen(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/block/entity/SignBlockEntity;Z)V"), cancellable = true)
     protected void postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> info){
-        NbtCompound compoundTag = stack.getNbt();
-        if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
+        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (nbtComponent != null && nbtComponent.contains("BlockEntityTag")) {
             info.cancel();
         }
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
-        NbtCompound compoundTag = stack.getNbt();
-        if (compoundTag != null && compoundTag.contains("BlockEntityTag")) {
-            NbtCompound nbt = compoundTag.getCompound("BlockEntityTag");
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
+        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (nbtComponent != null && nbtComponent.contains("BlockEntityTag")) {
+            NbtCompound nbtCompound = nbtComponent.copyNbt().getCompound("BlockEntityTag");
             Optional<Text[]> front = Optional.empty();
             Optional<Text[]> back = Optional.empty();
 
-            if (nbt.contains("front_text")) {
+            if (nbtCompound.contains("front_text")) {
                 front = SignText.CODEC
-                        .parse(NbtOps.INSTANCE, nbt.getCompound("front_text"))
-                        .resultOrPartial(s -> {})
+                        .parse(NbtOps.INSTANCE, nbtCompound.getCompound("front_text"))
+                        .result()
                         .map(text -> text.getMessages(false));
             }
 
-            if (nbt.contains("back_text")) {
+            if (nbtCompound.contains("back_text")) {
                 back = SignText.CODEC
-                        .parse(NbtOps.INSTANCE, nbt.getCompound("back_text"))
-                        .resultOrPartial(s -> {})
+                        .parse(NbtOps.INSTANCE, nbtCompound.getCompound("back_text"))
+                        .result()
                         .map(text -> text.getMessages(false));
             }
 

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:cherry_hanging_sign"
-            ]
+            "items": "minecraft:cherry_hanging_sign"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_sign",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_sign"
     ]
   ],
   "rewards": {
     "recipes": [
       "improved-signs:reset_cherry_hanging_sign"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

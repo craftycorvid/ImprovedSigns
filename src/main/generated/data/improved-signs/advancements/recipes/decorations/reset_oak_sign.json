@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:oak_sign"
-            ]
+            "items": "minecraft:oak_sign"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_sign",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_sign"
     ]
   ],
   "rewards": {
     "recipes": [
       "improved-signs:reset_oak_sign"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
