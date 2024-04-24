@@ -3,7 +3,6 @@ package com.craftycorvid.improvedSigns;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// import com.craftycorvid.improvedSigns.compat.FlanCompat;
 import com.craftycorvid.improvedSigns.config.ModConfig;
 import com.craftycorvid.improvedSigns.event.UseItemFrameEntityCallback;
 import com.craftycorvid.improvedSigns.event.UseSignBlockCallback;
@@ -24,7 +23,6 @@ public class ImprovedSignsMod implements ModInitializer {
         LOGGER.info("Improved Signs Initializing");
         ModConfig.init();
         LootConditionTypes.register();
-        // FlanCompat.register();
 
         UseBlockCallback.EVENT.register(UseSignBlockCallback::onUseSignBlockCallback);
 

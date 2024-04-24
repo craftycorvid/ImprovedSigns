@@ -3,7 +3,6 @@ package com.craftycorvid.improvedSigns.event;
 import java.util.Optional;
 
 import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
-// import com.craftycorvid.improvedSigns.compat.FlanCompat;
 import com.craftycorvid.improvedSigns.config.ModConfig;
 
 import net.minecraft.block.BlockState;

@@ -2,7 +2,6 @@ package com.craftycorvid.improvedSigns;
 
 import java.util.Optional;
 
-// import com.craftycorvid.improvedSigns.compat.FlanCompat;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,8 +18,6 @@ public class ImprovedSignsUtils {
             Direction oppositeDirection) {
         BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(),
                 oppositeDirection.getOffsetZ());
-         /* if (FlanCompat.checkPassthrough(world, player, hangingPos) == ActionResult.FAIL)
-             return; */
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
         BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, hangingPos, false);

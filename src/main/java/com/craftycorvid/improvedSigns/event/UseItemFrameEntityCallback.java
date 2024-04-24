@@ -3,7 +3,6 @@ package com.craftycorvid.improvedSigns.event;
 import java.util.Optional;
 
 import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
-// import com.craftycorvid.improvedSigns.compat.FlanCompat;
 import com.craftycorvid.improvedSigns.config.ModConfig;
 
 import net.minecraft.entity.Entity;
@@ -29,7 +28,7 @@ public class UseItemFrameEntityCallback {
         if (!hand.equals(Hand.MAIN_HAND))
             return ActionResult.FAIL;
 
-        if (ModConfig.enableInvisibleFrames && player.isSneaking() /*&& FlanCompat.checkEdit(world, player, entity.getBlockPos()) != ActionResult.FAIL*/) {
+        if (ModConfig.enableInvisibleFrames && player.isSneaking()) {
             Item item;
             switch(ModConfig.invisibleFrameItem) {
                case GLASS_PANE:

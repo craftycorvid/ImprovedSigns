@@ -65,8 +65,6 @@ dependencies {
 	include("maven.modrinth:midnightlib:${project.midnightlib_version}")
 	modImplementation("maven.modrinth:midnightlib:${project.midnightlib_version}")
 
-	// modImplementation files("./libs/flan-1.20-1.8.4.3-fabric.jar")
-
 	modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 

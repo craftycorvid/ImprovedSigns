@@ -12,11 +12,11 @@ This mod is only for Fabric/Quilt Servers(or Single-Player) and requires [Fabric
  - **Invisible Item Frames** - Use Amethyst Shards to turn item frames invisible
     - You can configure it to use Glass Panes instead
  - Stop Sign editor from opening when placing new signs
- - Flan compatibility for passthrough/editing
  - All features are configurable in `config/improvedsigns.json5`
 
 ### Shout-outs
  - Original Sign Retain functionality merged from [umollu's Sign Retain](https://www.curseforge.com/minecraft/mc-mods/sign-retain)
  - Girafi for the idea for Passthrough Signs. Find their original mod for Forge [here](https://www.curseforge.com/minecraft/mc-mods/passthrough-signs)
+ - MeeniMc for contributing several version updates when I didn't have time for the mod
  - Jarva for many contributions to the mod
  - Everyone else that has [contributed](https://github.com/CraftyCorvid/ImprovedSigns/graphs/contributors)
