@@ -14,8 +14,7 @@ import java.util.Arrays;
 public class SignTextLootCondition implements LootCondition {
     private static final SignTextLootCondition INSTANCE = new SignTextLootCondition();
 
-    public SignTextLootCondition() {
-    }
+    public SignTextLootCondition() {}
 
     @Override
     public LootConditionType getType() {
@@ -24,11 +23,18 @@ public class SignTextLootCondition implements LootCondition {
 
     @Override
     public boolean test(LootContext lootContext) {
-        if (!ModConfig.enableSignRetain) return false;
-        SignBlockEntity signBlockEntity = (SignBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
-        if (signBlockEntity == null) return false;
-        if (Arrays.stream(signBlockEntity.getText(true).getMessages(false)).anyMatch(text -> !text.equals(ScreenTexts.EMPTY))) return true;
-        if (Arrays.stream(signBlockEntity.getText(false).getMessages(false)).anyMatch(text -> !text.equals(ScreenTexts.EMPTY))) return true;
+        if (!ModConfig.enableSignRetain)
+            return false;
+        SignBlockEntity signBlockEntity =
+                (SignBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
+        if (signBlockEntity == null)
+            return false;
+        if (Arrays.stream(signBlockEntity.getText(true).getMessages(false))
+                .anyMatch(text -> !text.equals(ScreenTexts.EMPTY)))
+            return true;
+        if (Arrays.stream(signBlockEntity.getText(false).getMessages(false))
+                .anyMatch(text -> !text.equals(ScreenTexts.EMPTY)))
+            return true;
         return false;
     }
 

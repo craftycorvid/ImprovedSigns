@@ -16,7 +16,8 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 public class RecipeDatagen extends FabricRecipeProvider {
-    public RecipeDatagen(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public RecipeDatagen(FabricDataOutput dataOutput,
+            CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(dataOutput, registriesFuture);
     }
 
@@ -47,6 +48,9 @@ public class RecipeDatagen extends FabricRecipeProvider {
     }
 
     public void generateClearSignRecipe(RecipeExporter exporter, Item sign) {
-        ShapelessRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, sign).input(sign).criterion("has_sign", InventoryChangedCriterion.Conditions.items(sign)).offerTo(exporter, new Identifier(ImprovedSignsMod.MOD_ID, "reset_" + Registries.ITEM.getId(sign).getPath()));
+        ShapelessRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, sign).input(sign)
+                .criterion("has_sign", InventoryChangedCriterion.Conditions.items(sign))
+                .offerTo(exporter, new Identifier(ImprovedSignsMod.MOD_ID,
+                        "reset_" + Registries.ITEM.getId(sign).getPath()));
     }
 }

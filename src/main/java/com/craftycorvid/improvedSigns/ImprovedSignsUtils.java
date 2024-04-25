@@ -16,11 +16,12 @@ import net.minecraft.world.World;
 public class ImprovedSignsUtils {
     public static ActionResult handlePassthrough(PlayerEntity player, World world, BlockPos pos,
             Direction oppositeDirection) {
-        BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(), oppositeDirection.getOffsetY(),
-                oppositeDirection.getOffsetZ());
+        BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(),
+                oppositeDirection.getOffsetY(), oppositeDirection.getOffsetZ());
         BlockState hangingState = world.getBlockState(hangingPos);
         Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
-        BlockHitResult hangingHitResult = new BlockHitResult(hanginPosVec3d, oppositeDirection, hangingPos, false);
+        BlockHitResult hangingHitResult =
+                new BlockHitResult(hanginPosVec3d, oppositeDirection, hangingPos, false);
         return hangingState.onUse(world, player, hangingHitResult);
     }
 

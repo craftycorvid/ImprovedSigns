@@ -16,9 +16,11 @@ import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.registry.RegistryWrapper;
 
 public class LootTableDatagen extends FabricBlockLootTableProvider {
-    public LootTableDatagen(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public LootTableDatagen(FabricDataOutput output,
+            CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
         super(output, registryLookup);
     }
+
     @Override
     public void generate() {
         addSignNBTDropTable(Blocks.OAK_SIGN);
@@ -46,21 +48,15 @@ public class LootTableDatagen extends FabricBlockLootTableProvider {
     }
 
     public void addSignNBTDropTable(Block sign) {
-        this.addDrop(sign, LootTable.builder()
-            .pool(
-                this.addSurvivesExplosionCondition(sign, LootPool.builder()
-                    .rolls(ConstantLootNumberProvider.create(1.0F))
-                    .with(
-                        // TODO: EntityTarget needs to be "block_entity" not "THIS", need to figure out a way to make that happen.
-                        ItemEntry.builder(sign).apply(CopyNbtLootFunction.builder(EntityTarget.THIS)
-                                .withOperation("front_text", "BlockEntityTag.front_text")
-                                .withOperation("back_text", "BlockEntityTag.back_text")
-                                .withOperation("is_waxed", "BlockEntityTag.is_waxed")
-                                .conditionally(SignTextLootCondition.builder())
-                        )
-                    )
-                )
-            )
-        );
+        this.addDrop(sign, LootTable.builder().pool(this.addSurvivesExplosionCondition(sign,
+                LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with(
+                        // TODO: EntityTarget needs to be "block_entity" not "THIS", need to figure
+                        // out a way to make that happen.
+                        ItemEntry.builder(sign)
+                                .apply(CopyNbtLootFunction.builder(EntityTarget.THIS)
+                                        .withOperation("front_text", "BlockEntityTag.front_text")
+                                        .withOperation("back_text", "BlockEntityTag.back_text")
+                                        .withOperation("is_waxed", "BlockEntityTag.is_waxed")
+                                        .conditionally(SignTextLootCondition.builder()))))));
     }
 }

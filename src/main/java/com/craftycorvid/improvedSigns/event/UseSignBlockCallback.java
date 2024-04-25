@@ -13,6 +13,9 @@ import net.minecraft.block.entity.SignText;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.DecorationItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SignChangingItem;
 import net.minecraft.nbt.NbtCompound;
@@ -38,56 +41,75 @@ public class UseSignBlockCallback {
         if (!(blockEntity instanceof SignBlockEntity signBlockEntity))
             return ActionResult.PASS;
 
-        if (hand.equals(Hand.OFF_HAND)) return ActionResult.PASS;
-     
-        if(!player.isSneaking()) {
+        if (hand.equals(Hand.OFF_HAND))
+            return ActionResult.PASS;
+
+        if (!player.isSneaking()) {
             Optional<ItemStack> signHand = ImprovedSignsUtils.getSignHand(player);
             if (ModConfig.enableSignCopy && signHand.isPresent()) {
                 ItemStack sign = signHand.get();
-                NbtCompound nbt = sign.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
+                NbtCompound nbt =
+                        sign.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)
+                                .copyNbt();
                 NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
                 SignText frontText = signBlockEntity.getFrontText();
-                SignText.CODEC.encodeStart(NbtOps.INSTANCE, frontText).result().ifPresent(textNbt -> {
-                    NbtCompound text = (NbtCompound) textNbt;
-                    if (!ModConfig.retainDyeOnSignCopy) {
-                        text.putBoolean("has_glowing_text", false);
-                        text.putInt("color", DyeColor.BLACK.getSignColor());
-                    }
-                    blockEntityTag.put("front_text", text);
-                });
+                SignText.CODEC.encodeStart(NbtOps.INSTANCE, frontText).result()
+                        .ifPresent(textNbt -> {
+                            NbtCompound text = (NbtCompound) textNbt;
+                            if (!ModConfig.retainDyeOnSignCopy) {
+                                text.putBoolean("has_glowing_text", false);
+                                text.putInt("color", DyeColor.BLACK.getSignColor());
+                            }
+                            blockEntityTag.put("front_text", text);
+                        });
                 SignText backText = signBlockEntity.getBackText();
-                SignText.CODEC.encodeStart(NbtOps.INSTANCE, backText).result().ifPresent(textNbt -> {
-                    NbtCompound text = (NbtCompound) textNbt;
-                    if (!ModConfig.retainDyeOnSignCopy) {
-                        text.putBoolean("has_glowing_text", false);
-                        text.putInt("color", DyeColor.BLACK.getSignColor());
-                    }
-                    blockEntityTag.put("back_text", text);
-                });
+                SignText.CODEC.encodeStart(NbtOps.INSTANCE, backText).result()
+                        .ifPresent(textNbt -> {
+                            NbtCompound text = (NbtCompound) textNbt;
+                            if (!ModConfig.retainDyeOnSignCopy) {
+                                text.putBoolean("has_glowing_text", false);
+                                text.putInt("color", DyeColor.BLACK.getSignColor());
+                            }
+                            blockEntityTag.put("back_text", text);
+                        });
                 blockEntityTag.putBoolean("is_waxed", signBlockEntity.isWaxed());
                 nbt.put("BlockEntityTag", blockEntityTag);
                 sign.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
-                player.sendMessage(Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
+                player.sendMessage(
+                        Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
                 return ActionResult.SUCCESS;
             }
 
             if (ModConfig.enableSignPassthrough) {
                 BlockState state = world.getBlockState(pos);
                 if (state.contains(HorizontalFacingBlock.FACING)) {
-                    Direction oppositeDirection = state.get(HorizontalFacingBlock.FACING).getOpposite();
-                    return ImprovedSignsUtils.handlePassthrough(player, world, pos, oppositeDirection);
+                    Direction oppositeDirection =
+                            state.get(HorizontalFacingBlock.FACING).getOpposite();
+                    return ImprovedSignsUtils.handlePassthrough(player, world, pos,
+                            oppositeDirection);
                 }
             }
 
             return ActionResult.PASS;
         }
 
-        ItemStack handItem = player.getStackInHand(Hand.MAIN_HAND);
-        if (handItem.getItem() instanceof SignChangingItem) {
-            ItemActionResult result = blockState.onUseWithItem(handItem, world, player, hand, hitResult);
-            return result.toActionResult();
+        if (ModConfig.enableSignPassthrough) {
+            ItemStack handItemStack = player.getStackInHand(Hand.MAIN_HAND);
+            Item handItem = handItemStack.getItem();
+            if (handItem instanceof SignChangingItem) {
+                ItemActionResult result =
+                        blockState.onUseWithItem(handItemStack, world, player, hand, hitResult);
+                return result.toActionResult();
+            }
+
+            Item offhandItem = player.getStackInHand(Hand.OFF_HAND).getItem();
+            if (!(handItem instanceof BlockItem || handItem instanceof DecorationItem
+                    || offhandItem instanceof BlockItem || offhandItem instanceof DecorationItem)) {
+                return blockState.onUse(world, player, hitResult);
+            }
         }
-        
-        return blockState.onUse(world, player, hitResult);
+
+        return ActionResult.PASS;
+
     }
 }

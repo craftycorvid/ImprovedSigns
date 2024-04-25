@@ -19,7 +19,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class UseItemFrameEntityCallback {
-    public static ActionResult onUseItemFrameEntityCallback(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+    public static ActionResult onUseItemFrameEntityCallback(PlayerEntity player, World world,
+            Hand hand, Entity entity, EntityHitResult hitResult) {
         if (world.isClient)
             return ActionResult.PASS;
         if (!(entity instanceof ItemFrameEntity frameEntity))
@@ -30,12 +31,12 @@ public class UseItemFrameEntityCallback {
 
         if (ModConfig.enableInvisibleFrames && player.isSneaking()) {
             Item item;
-            switch(ModConfig.invisibleFrameItem) {
-               case GLASS_PANE:
-                   item = Items.GLASS_PANE;
-                   break;
-               default:
-               case AMETHYST_SHARD:
+            switch (ModConfig.invisibleFrameItem) {
+                case GLASS_PANE:
+                    item = Items.GLASS_PANE;
+                    break;
+                default:
+                case AMETHYST_SHARD:
                     item = Items.AMETHYST_SHARD;
                     break;
             }
@@ -48,10 +49,7 @@ public class UseItemFrameEntityCallback {
                 if (frameEntity.getHeldItemStack().isOf(Items.AIR)) {
                     return ActionResult.PASS;
                 }
-                if (!player.getAbilities().creativeMode) {
-                    ItemStack itemStack = itemOption.get();
-                    itemStack.decrement(1);
-                }
+                itemOption.get().decrementUnlessCreative(1, player);
                 entity.setInvisible(true);
                 return ActionResult.SUCCESS;
             }
