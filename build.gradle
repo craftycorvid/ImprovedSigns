@@ -14,8 +14,8 @@ group = project.maven_group
 if (file('secrets.gradle').exists()) {
     apply from: 'secrets.gradle'
 } else {
-	project.ext.curseApiKey   = null
-	project.ext.modrinthToken = null
+	project.ext.curseApiKey   = ''
+	project.ext.modrinthToken = ''
 }
 
 loom {
