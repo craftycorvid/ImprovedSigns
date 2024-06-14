@@ -12,6 +12,6 @@ public class LootConditionTypes {
             new LootConditionType(MapCodec.unit(SignTextLootCondition.builder().build()));
 
     public static void register() {
-        Registry.register(Registries.LOOT_CONDITION_TYPE, new Identifier("sign_text"), SIGN_TEXT);
+        Registry.register(Registries.LOOT_CONDITION_TYPE, Identifier.of("sign_text"), SIGN_TEXT);
     }
 }

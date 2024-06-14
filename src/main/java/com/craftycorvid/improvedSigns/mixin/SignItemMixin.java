@@ -16,7 +16,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.SignText;
-import net.minecraft.client.item.TooltipType;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,8 +32,8 @@ import net.minecraft.world.World;
 
 @Mixin(SignItem.class)
 public class SignItemMixin extends VerticallyAttachableBlockItem {
-    public SignItemMixin(Block standingBlock, Block wallBlock, Settings settings,
-            Direction verticalAttachmentDirection) {
+    public SignItemMixin(Block standingBlock, Block wallBlock,
+            net.minecraft.item.Item.Settings settings, Direction verticalAttachmentDirection) {
         super(standingBlock, wallBlock, settings, verticalAttachmentDirection);
     }
 

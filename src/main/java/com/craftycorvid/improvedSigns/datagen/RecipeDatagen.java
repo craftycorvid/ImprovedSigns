@@ -50,7 +50,7 @@ public class RecipeDatagen extends FabricRecipeProvider {
     public void generateClearSignRecipe(RecipeExporter exporter, Item sign) {
         ShapelessRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, sign).input(sign)
                 .criterion("has_sign", InventoryChangedCriterion.Conditions.items(sign))
-                .offerTo(exporter, new Identifier(ImprovedSignsMod.MOD_ID,
+                .offerTo(exporter, Identifier.of(ImprovedSignsMod.MOD_ID,
                         "reset_" + Registries.ITEM.getId(sign).getPath()));
     }
 }
