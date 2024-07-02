@@ -1,0 +1,42 @@
+name: Publish on GitHub, CurseForge & Modrinth
+on: [ workflow_dispatch ]
+
+env:                                              
+  VERSION: 1.4.2
+  RELEASE_NAME: Improved Signs 1.4.2 for Minecraft 1.21
+  MODRINTH_TOKEN: ${{ secrets.PUBLISH_MODRINTH_TOKEN }}
+  CURSEFORGE_TOKEN: ${{ secrets.PUBLISH_CURSEFORGE_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}           
+
+jobs:
+  build:
+    uses: './.github/workflows/build.yml'
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Artifacts
+      - name: Publish (CurseForge/Modrinth/GitHub)
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          curseforge-id: 384963                                             #The id of your CurseForge project
+          curseforge-token: "${{env.CURSEFORGE_TOKEN}}"
+          
+          modrinth-id: K9mQ90pb                                             #The id of your modrinth project
+          modrinth-token: "${{env.MODRINTH_TOKEN}}"
+          modrinth-featured: true
+          
+          github-tag: "v${{env.VERSION}}"
+          github-token: "${{env.GITHUB_TOKEN}}"
+
+          name: "${{env.RELEASE_NAME}}"                             
+          version: "${{env.VERSION}}"
+          version-type: release
+
+          loaders: fabric
+          files: |
+            !(*-@(dev|sources|javadoc)).jar
+            *-@(dev|sources|javadocs).jar

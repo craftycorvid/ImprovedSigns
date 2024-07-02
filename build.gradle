@@ -1,21 +1,12 @@
 plugins {
 	id 'fabric-loom' version '1.6-SNAPSHOT'
-	id "me.hypherionmc.cursegradle" version "2.0.1"
-	id "com.modrinth.minotaur" version "2.+"
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
-
-archivesBaseName = project.archives_base_name
 version = "${project.mod_version}"
 group = project.maven_group
 
-if (file('secrets.gradle').exists()) {
-    apply from: 'secrets.gradle'
-} else {
-	project.ext.curseApiKey   = ''
-	project.ext.modrinthToken = ''
+base {
+	archivesName = project.archives_base_name
 }
 
 loom {
@@ -45,10 +36,6 @@ sourceSets {
 repositories {
 	maven { url 'https://jitpack.io' }
 	maven { url = 'https://api.modrinth.com/maven'}
-	maven {
-		name = "Flemmli97"
-		url "https://gitlab.com/api/v4/projects/21830712/packages/maven"
-	}
 	maven {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/releases/"
@@ -90,52 +77,11 @@ java {
 	// if it is present.
 	// If you remove this line, sources will not be generated. 
 	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
 	from "LICENSE"
-}
-
-curseforge {
-	apiKey = curseApiKey
-	project {
-		id = project.curseforge_id
-		changelog = project.changelog
-		releaseType = 'release'
-		addGameVersion "Fabric"
-		addGameVersion "Quilt"
-		addGameVersion project.minecraft_version
-		relations {
-			requiredDependency 'fabric-api'
-		}
-
-		mainArtifact(remapJar) {
-			displayName = "Improved Signs $project.mod_version"
-		}
-	}
-	options {
-		forgeGradleIntegration = false
-	}
-}
-tasks.curseforge.onlyIf {
-   curseApiKey
-}
-
-modrinth {
-	syncBodyFrom = rootProject.file("README.md").text
-	token = modrinthToken
-	projectId = project.modrinth_id
-	versionName = "Improved Signs $project.mod_version for MC $project.minecraft_version"
-	versionNumber = project.mod_version
-	versionType = 'RELEASE'
-	uploadFile = remapJar
-	changelog = project.changelog
-	gameVersions = [project.minecraft_version]
-	loaders = ['fabric','quilt']
-	dependencies {
-        required.project "fabric-api"
-    }
-}
-tasks.modrinth.onlyIf {
-   modrinthToken
 }
