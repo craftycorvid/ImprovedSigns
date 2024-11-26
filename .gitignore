@@ -18,7 +18,7 @@ bin/
 
 #fabric
 run/
-
+remappedSrc/
 secrets.gradle
 
 libs/
