@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:jungle_sign"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:jungle_sign"
+  }
+}

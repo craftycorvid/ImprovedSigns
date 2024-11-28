@@ -1,8 +1,8 @@
-// 1.21	2024-06-13T18:46:37.1214235	Improved Signs/Block Loot Tables
+// 1.21.3	2024-11-27T19:26:37.4717796	Improved Signs/Block Loot Tables
 71b22c9c13f76f0a18dc2e55b78d0eb06df9b9ee data\minecraft\loot_table\blocks\bamboo_hanging_sign.json
 45cfab351f54d3b5af42032a487c715de9050356 data\minecraft\loot_table\blocks\spruce_sign.json
-de88b71ecf5b5f299640dab969d614acb0c90e04 data\minecraft\loot_table\blocks\crimson_sign.json
 d15b4086b926fe6868cdfbf50a9208d001690aea data\minecraft\loot_table\blocks\oak_hanging_sign.json
+de88b71ecf5b5f299640dab969d614acb0c90e04 data\minecraft\loot_table\blocks\crimson_sign.json
 bd0a6a0b4428ac53baccf0d37a6b518b2b781d88 data\minecraft\loot_table\blocks\warped_hanging_sign.json
 4638261fff6fa66380d77dbf36db4dfdbc620759 data\minecraft\loot_table\blocks\birch_hanging_sign.json
 f1974fc554290d2e73e299dc4e5bee1949e70e52 data\minecraft\loot_table\blocks\jungle_hanging_sign.json

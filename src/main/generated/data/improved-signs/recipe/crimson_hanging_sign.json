@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:crimson_hanging_sign"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:crimson_hanging_sign"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:dark_oak_hanging_sign"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:dark_oak_hanging_sign"
+  }
+}

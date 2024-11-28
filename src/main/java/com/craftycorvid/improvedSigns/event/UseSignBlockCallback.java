@@ -24,7 +24,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -97,9 +96,7 @@ public class UseSignBlockCallback {
             ItemStack handItemStack = player.getStackInHand(Hand.MAIN_HAND);
             Item handItem = handItemStack.getItem();
             if (handItem instanceof SignChangingItem) {
-                ItemActionResult result =
-                        blockState.onUseWithItem(handItemStack, world, player, hand, hitResult);
-                return result.toActionResult();
+                return blockState.onUseWithItem(handItemStack, world, player, hand, hitResult);
             }
 
             Item offhandItem = player.getStackInHand(Hand.OFF_HAND).getItem();

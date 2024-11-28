@@ -33,8 +33,8 @@ import net.minecraft.world.World;
 @Mixin(SignItem.class)
 public class SignItemMixin extends VerticallyAttachableBlockItem {
     public SignItemMixin(Block standingBlock, Block wallBlock,
-            net.minecraft.item.Item.Settings settings, Direction verticalAttachmentDirection) {
-        super(standingBlock, wallBlock, settings, verticalAttachmentDirection);
+            Direction verticalAttachmentDirection, net.minecraft.item.Item.Settings settings) {
+        super(standingBlock, wallBlock, verticalAttachmentDirection, settings);
     }
 
     @Inject(method = "postPlacement", at = @At(value = "INVOKE",
