@@ -25,7 +25,7 @@ jobs:
           curseforge-id: 384963                                             #The id of your CurseForge project
           curseforge-token: "${{env.CURSEFORGE_TOKEN}}"
           
-          modrinth-id: K9mQ90pb                                             #The id of your modrinth project
+          modrinth-id: tEcCNQe7                                             #The id of your modrinth project
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
           modrinth-featured: true
           
