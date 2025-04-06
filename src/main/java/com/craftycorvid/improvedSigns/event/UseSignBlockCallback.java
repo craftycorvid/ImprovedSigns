@@ -50,7 +50,7 @@ public class UseSignBlockCallback {
                 NbtCompound nbt =
                         sign.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)
                                 .copyNbt();
-                NbtCompound blockEntityTag = nbt.getCompound("BlockEntityTag");
+                NbtCompound blockEntityTag = nbt.getCompoundOrEmpty("BlockEntityTag");
                 SignText frontText = signBlockEntity.getFrontText();
                 SignText.CODEC.encodeStart(NbtOps.INSTANCE, frontText).result()
                         .ifPresent(textNbt -> {
@@ -76,6 +76,7 @@ public class UseSignBlockCallback {
                 sign.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
                 player.sendMessage(
                         Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
+                ImprovedSignsUtils.appendSignTooltip(sign);
                 return ActionResult.SUCCESS;
             }
 

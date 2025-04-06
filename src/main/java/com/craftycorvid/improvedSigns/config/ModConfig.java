@@ -17,6 +17,8 @@ public class ModConfig extends MidnightConfig {
     @Entry
     public static boolean enableSignCopy = true;
     @Entry
+    public static boolean serverSideSignTextPreview = true;
+    @Entry
     public static boolean retainDyeOnSignCopy = false;
 
     @Comment(centered = true)

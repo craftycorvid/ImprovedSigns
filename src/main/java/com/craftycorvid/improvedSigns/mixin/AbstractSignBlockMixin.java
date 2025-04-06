@@ -29,18 +29,16 @@ public abstract class AbstractSignBlockMixin extends BlockWithEntity {
         super.onPlaced(world, pos, state, placer, itemStack);
         NbtComponent nbtComponent = itemStack.get(DataComponentTypes.CUSTOM_DATA);
         if (nbtComponent != null && nbtComponent.contains("BlockEntityTag")) {
-            NbtCompound nbtCompound = nbtComponent.copyNbt().getCompound("BlockEntityTag");
+            NbtCompound nbtCompound = nbtComponent.copyNbt().getCompoundOrEmpty("BlockEntityTag");
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof SignBlockEntity signBlockEntity) {
-                signBlockEntity.setText(
-                        SignText.CODEC.parse(NbtOps.INSTANCE, nbtCompound.getCompound("front_text"))
-                                .result().orElse(new SignText()),
-                        true);
-                signBlockEntity.setText(
-                        SignText.CODEC.parse(NbtOps.INSTANCE, nbtCompound.getCompound("back_text"))
-                                .result().orElse(new SignText()),
-                        false);
-                signBlockEntity.setWaxed(nbtCompound.getBoolean("is_waxed"));
+                signBlockEntity.setText(SignText.CODEC
+                        .parse(NbtOps.INSTANCE, nbtCompound.getCompoundOrEmpty("front_text"))
+                        .result().orElse(new SignText()), true);
+                signBlockEntity.setText(SignText.CODEC
+                        .parse(NbtOps.INSTANCE, nbtCompound.getCompoundOrEmpty("back_text"))
+                        .result().orElse(new SignText()), false);
+                signBlockEntity.setWaxed(nbtCompound.getBoolean("is_waxed").orElse(false));
             }
         }
     }
