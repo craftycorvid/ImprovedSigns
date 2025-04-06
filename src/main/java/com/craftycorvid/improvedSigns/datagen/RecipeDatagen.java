@@ -36,12 +36,14 @@ public class RecipeDatagen extends FabricRecipeProvider {
                 generateClearSignRecipe(exporter, Items.JUNGLE_HANGING_SIGN);
                 generateClearSignRecipe(exporter, Items.ACACIA_SIGN);
                 generateClearSignRecipe(exporter, Items.ACACIA_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.CHERRY_SIGN);
-                generateClearSignRecipe(exporter, Items.CHERRY_HANGING_SIGN);
                 generateClearSignRecipe(exporter, Items.DARK_OAK_SIGN);
                 generateClearSignRecipe(exporter, Items.DARK_OAK_HANGING_SIGN);
                 generateClearSignRecipe(exporter, Items.MANGROVE_SIGN);
                 generateClearSignRecipe(exporter, Items.MANGROVE_HANGING_SIGN);
+                generateClearSignRecipe(exporter, Items.CHERRY_SIGN);
+                generateClearSignRecipe(exporter, Items.CHERRY_HANGING_SIGN);
+                generateClearSignRecipe(exporter, Items.PALE_OAK_SIGN);
+                generateClearSignRecipe(exporter, Items.PALE_OAK_HANGING_SIGN);
                 generateClearSignRecipe(exporter, Items.BAMBOO_SIGN);
                 generateClearSignRecipe(exporter, Items.BAMBOO_HANGING_SIGN);
                 generateClearSignRecipe(exporter, Items.CRIMSON_SIGN);

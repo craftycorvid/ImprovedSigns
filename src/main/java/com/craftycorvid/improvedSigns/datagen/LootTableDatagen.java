@@ -33,12 +33,14 @@ public class LootTableDatagen extends FabricBlockLootTableProvider {
         addSignNBTDropTable(Blocks.JUNGLE_HANGING_SIGN);
         addSignNBTDropTable(Blocks.ACACIA_SIGN);
         addSignNBTDropTable(Blocks.ACACIA_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.CHERRY_SIGN);
-        addSignNBTDropTable(Blocks.CHERRY_HANGING_SIGN);
         addSignNBTDropTable(Blocks.DARK_OAK_SIGN);
         addSignNBTDropTable(Blocks.DARK_OAK_HANGING_SIGN);
         addSignNBTDropTable(Blocks.MANGROVE_SIGN);
         addSignNBTDropTable(Blocks.MANGROVE_HANGING_SIGN);
+        addSignNBTDropTable(Blocks.CHERRY_SIGN);
+        addSignNBTDropTable(Blocks.CHERRY_HANGING_SIGN);
+        addSignNBTDropTable(Blocks.PALE_OAK_SIGN);
+        addSignNBTDropTable(Blocks.PALE_OAK_HANGING_SIGN);
         addSignNBTDropTable(Blocks.BAMBOO_SIGN);
         addSignNBTDropTable(Blocks.BAMBOO_HANGING_SIGN);
         addSignNBTDropTable(Blocks.CRIMSON_SIGN);
