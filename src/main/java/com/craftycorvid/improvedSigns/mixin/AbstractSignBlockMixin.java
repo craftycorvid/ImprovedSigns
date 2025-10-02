@@ -7,6 +7,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtOps;
@@ -17,31 +18,34 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(AbstractSignBlock.class)
 public abstract class AbstractSignBlockMixin extends BlockWithEntity {
-    protected AbstractSignBlockMixin(Settings settings) {
-        super(settings);
-    }
+        protected AbstractSignBlockMixin(Settings settings) {
+                super(settings);
+        }
 
-    @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
-            ItemStack itemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack);
-        itemStack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getCompound("BlockEntityTag")
-                .ifPresent(nbtCompound -> {
-                    BlockEntity blockEntity = world.getBlockEntity(pos);
-                    if (blockEntity instanceof SignBlockEntity signBlockEntity) {
-                        signBlockEntity
-                                .setText(
-                                        SignText.CODEC
-                                                .parse(NbtOps.INSTANCE,
-                                                        nbtCompound
-                                                                .getCompoundOrEmpty("front_text"))
-                                                .result().orElse(new SignText()),
-                                        true);
-                        signBlockEntity.setText(SignText.CODEC
-                                .parse(NbtOps.INSTANCE, nbtCompound.getCompoundOrEmpty("back_text"))
-                                .result().orElse(new SignText()), false);
-                        signBlockEntity.setWaxed(nbtCompound.getBoolean("is_waxed").orElse(false));
-                    }
-                });
-    }
+        @Override
+        public void onPlaced(World world, BlockPos pos, BlockState state,
+                        @Nullable LivingEntity placer, ItemStack itemStack) {
+                super.onPlaced(world, pos, state, placer, itemStack);
+                itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)
+                                .copyNbt().getCompound("BlockEntityTag").ifPresent(nbtCompound -> {
+                                        BlockEntity blockEntity = world.getBlockEntity(pos);
+                                        if (blockEntity instanceof SignBlockEntity signBlockEntity) {
+                                                signBlockEntity.setText(SignText.CODEC.parse(
+                                                                NbtOps.INSTANCE,
+                                                                nbtCompound.getCompoundOrEmpty(
+                                                                                "front_text"))
+                                                                .result().orElse(new SignText()),
+                                                                true);
+                                                signBlockEntity.setText(SignText.CODEC.parse(
+                                                                NbtOps.INSTANCE,
+                                                                nbtCompound.getCompoundOrEmpty(
+                                                                                "back_text"))
+                                                                .result().orElse(new SignText()),
+                                                                false);
+                                                signBlockEntity.setWaxed(
+                                                                nbtCompound.getBoolean("is_waxed")
+                                                                                .orElse(false));
+                                        }
+                                });
+        }
 }

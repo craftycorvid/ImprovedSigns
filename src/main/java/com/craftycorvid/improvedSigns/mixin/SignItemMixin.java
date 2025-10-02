@@ -7,11 +7,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.craftycorvid.improvedSigns.config.ModConfig;
+import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SignItem;
@@ -35,7 +36,8 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
     protected void postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player,
             ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> info) {
         Optional<NbtCompound> optNbtCompound =
-                stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getCompound("BlockEntityTag");
+                stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt()
+                        .getCompound("BlockEntityTag");
         if (optNbtCompound.isPresent()) {
             info.cancel();
         }
@@ -47,7 +49,7 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
     private void onPlacement(final BlockPos pos, final World world, final PlayerEntity player,
             final ItemStack stack, final BlockState state,
             final CallbackInfoReturnable<Boolean> info) {
-        if (ModConfig.disableSignEditOnPlace)
+        if (MOD_CONFIG.disableSignEditOnPlace)
             info.cancel();
     }
 }

@@ -3,7 +3,7 @@ package com.craftycorvid.improvedSigns.event;
 import java.util.Optional;
 
 import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
-import com.craftycorvid.improvedSigns.config.ModConfig;
+import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 public class UseSignBlockCallback {
     public static ActionResult onUseSignBlockCallback(PlayerEntity player, World world, Hand hand,
             BlockHitResult hitResult) {
-        if (world instanceof net.minecraft.client.world.ClientWorld)
+        if (!(world instanceof net.minecraft.server.world.ServerWorld))
             return ActionResult.PASS;
         BlockPos pos = hitResult.getBlockPos();
         BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -45,7 +45,7 @@ public class UseSignBlockCallback {
 
         if (!player.isSneaking()) {
             Optional<ItemStack> signHand = ImprovedSignsUtils.getSignHand(player);
-            if (ModConfig.enableSignCopy && signHand.isPresent()) {
+            if (MOD_CONFIG.enableSignCopy && signHand.isPresent()) {
                 ItemStack sign = signHand.get();
                 NbtCompound nbt =
                         sign.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)
@@ -55,7 +55,7 @@ public class UseSignBlockCallback {
                 SignText.CODEC.encodeStart(NbtOps.INSTANCE, frontText).result()
                         .ifPresent(textNbt -> {
                             NbtCompound text = (NbtCompound) textNbt;
-                            if (!ModConfig.retainDyeOnSignCopy) {
+                            if (!MOD_CONFIG.retainDyeOnSignCopy) {
                                 text.putBoolean("has_glowing_text", false);
                                 text.putInt("color", DyeColor.BLACK.getSignColor());
                             }
@@ -65,7 +65,7 @@ public class UseSignBlockCallback {
                 SignText.CODEC.encodeStart(NbtOps.INSTANCE, backText).result()
                         .ifPresent(textNbt -> {
                             NbtCompound text = (NbtCompound) textNbt;
-                            if (!ModConfig.retainDyeOnSignCopy) {
+                            if (!MOD_CONFIG.retainDyeOnSignCopy) {
                                 text.putBoolean("has_glowing_text", false);
                                 text.putInt("color", DyeColor.BLACK.getSignColor());
                             }
@@ -80,7 +80,7 @@ public class UseSignBlockCallback {
                 return ActionResult.SUCCESS;
             }
 
-            if (ModConfig.enableSignPassthrough) {
+            if (MOD_CONFIG.enableSignPassthrough) {
                 BlockState state = world.getBlockState(pos);
                 if (state.contains(HorizontalFacingBlock.FACING)) {
                     Direction oppositeDirection =
@@ -93,7 +93,7 @@ public class UseSignBlockCallback {
             return ActionResult.PASS;
         }
 
-        if (ModConfig.enableSignPassthrough) {
+        if (MOD_CONFIG.enableSignPassthrough) {
             ItemStack handItemStack = player.getStackInHand(Hand.MAIN_HAND);
             Item handItem = handItemStack.getItem();
             if (handItem instanceof SignChangingItem) {

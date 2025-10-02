@@ -2,10 +2,11 @@ name: Publish on GitHub, CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:                                              
-  VERSION: 1.5.1
-  RELEASE_NAME: Improved Signs 1.5.1 for Minecraft 1.21.9
+  VERSION: 1.6.0
+  RELEASE_NAME: Improved Signs 1.6.0 for Minecraft 1.21.9
   CHANGE_LOG: |
-    - Removed strict version checks against Minecraft versions
+    - Replaced Midnightlib with an integrated GSON config system
+    - Fixed some errors in 1.21.9 port
   MODRINTH_TOKEN: ${{ secrets.PUBLISH_MODRINTH_TOKEN }}
   CURSEFORGE_TOKEN: ${{ secrets.PUBLISH_CURSEFORGE_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}           

@@ -3,7 +3,7 @@ package com.craftycorvid.improvedSigns.event;
 import java.util.Optional;
 
 import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
-import com.craftycorvid.improvedSigns.config.ModConfig;
+import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 public class UseItemFrameEntityCallback {
     public static ActionResult onUseItemFrameEntityCallback(PlayerEntity player, World world,
             Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (world instanceof net.minecraft.client.world.ClientWorld)
+        if (!(world instanceof net.minecraft.server.world.ServerWorld))
             return ActionResult.PASS;
         if (!(entity instanceof ItemFrameEntity frameEntity))
             return ActionResult.PASS;
@@ -29,9 +29,9 @@ public class UseItemFrameEntityCallback {
         if (!hand.equals(Hand.MAIN_HAND))
             return ActionResult.FAIL;
 
-        if (ModConfig.enableInvisibleFrames && player.isSneaking()) {
+        if (MOD_CONFIG.enableInvisibleFrames && player.isSneaking()) {
             Item item;
-            switch (ModConfig.invisibleFrameItem) {
+            switch (MOD_CONFIG.invisibleFrameItem) {
                 case GLASS_PANE:
                     item = Items.GLASS_PANE;
                     break;
@@ -55,7 +55,7 @@ public class UseItemFrameEntityCallback {
             }
         }
 
-        if (ModConfig.enableFramePassthrough && !player.isSneaking()) {
+        if (MOD_CONFIG.enableFramePassthrough && !player.isSneaking()) {
             BlockPos pos = entity.getBlockPos();
             Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
             return ImprovedSignsUtils.handlePassthrough(player, world, pos, oppositeDirection);

@@ -15,13 +15,14 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 public class ImprovedSignsMod implements ModInitializer {
     public static final String MOD_ID = "improved-signs";
     public static final String MOD_NAME = "Improved Signs";
+    public static ModConfig MOD_CONFIG;
 
     public static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void onInitialize() {
         LOGGER.info("Improved Signs Initializing");
-        ModConfig.init();
+        MOD_CONFIG = ModConfig.loadConfig();
         LootConditionTypes.register();
 
         UseBlockCallback.EVENT.register(UseSignBlockCallback::onUseSignBlockCallback);

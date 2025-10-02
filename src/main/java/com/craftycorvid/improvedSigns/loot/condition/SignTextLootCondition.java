@@ -1,6 +1,6 @@
 package com.craftycorvid.improvedSigns.loot.condition;
 
-import com.craftycorvid.improvedSigns.config.ModConfig;
+import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.loot.condition.LootCondition;
@@ -23,7 +23,7 @@ public class SignTextLootCondition implements LootCondition {
 
     @Override
     public boolean test(LootContext lootContext) {
-        if (!ModConfig.enableSignRetain)
+        if (!MOD_CONFIG.enableSignRetain)
             return false;
         SignBlockEntity signBlockEntity =
                 (SignBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);

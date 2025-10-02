@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import com.craftycorvid.improvedSigns.config.ModConfig;
+import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -67,11 +68,11 @@ public class ImprovedSignsUtils {
     }
 
     public static void appendSignTooltip(ItemStack stack) {
-        if (!ModConfig.serverSideSignTextPreview)
+        if (!MOD_CONFIG.serverSideSignTextPreview)
             return;
 
-        stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getCompound("BlockEntityTag")
-                .ifPresent(nbtCompound -> {
+        stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt()
+                .getCompound("BlockEntityTag").ifPresent(nbtCompound -> {
                     Optional<List<MutableText>> front =
                             parseSignCustomData(nbtCompound, "front_text");
                     Optional<List<MutableText>> back =

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.craftycorvid.improvedSigns.config.ModConfig;
+import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,7 +27,7 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntity {
     @Inject(at = @At("HEAD"), method = "interact", cancellable = true)
     void onSetRotation(final PlayerEntity player, final Hand hand,
             final CallbackInfoReturnable<ActionResult> info) {
-        if (ModConfig.enableFramePassthrough && !player.isSneaking()) {
+        if (MOD_CONFIG.enableFramePassthrough && !player.isSneaking()) {
             info.setReturnValue(ActionResult.FAIL);
         }
     }
