@@ -3,7 +3,7 @@ on: [ workflow_dispatch ]
 
 env:                                              
   VERSION: 1.5.1
-  RELEASE_NAME: Improved Signs 1.5.1 for Minecraft 1.21.6 + 1.21.7
+  RELEASE_NAME: Improved Signs 1.5.1 for Minecraft 1.21.9
   CHANGE_LOG: |
     - Removed strict version checks against Minecraft versions
   MODRINTH_TOKEN: ${{ secrets.PUBLISH_MODRINTH_TOKEN }}
