@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 public class UseSignBlockCallback {
     public static ActionResult onUseSignBlockCallback(PlayerEntity player, World world, Hand hand,
             BlockHitResult hitResult) {
-        if (world.isClient)
+        if (world instanceof net.minecraft.client.world.ClientWorld)
             return ActionResult.PASS;
         BlockPos pos = hitResult.getBlockPos();
         BlockEntity blockEntity = world.getBlockEntity(pos);

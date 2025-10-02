@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 public class UseItemFrameEntityCallback {
     public static ActionResult onUseItemFrameEntityCallback(PlayerEntity player, World world,
             Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (world.isClient)
+        if (world instanceof net.minecraft.client.world.ClientWorld)
             return ActionResult.PASS;
         if (!(entity instanceof ItemFrameEntity frameEntity))
             return ActionResult.PASS;

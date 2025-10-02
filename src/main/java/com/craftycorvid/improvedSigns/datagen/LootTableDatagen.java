@@ -1,7 +1,6 @@
 package com.craftycorvid.improvedSigns.datagen;
 
 import java.util.concurrent.CompletableFuture;
-
 import com.craftycorvid.improvedSigns.loot.condition.SignTextLootCondition;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -9,7 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext.EntityTarget;
+import net.minecraft.loot.context.LootContext.EntityReference;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.CopyNbtLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
@@ -55,7 +54,7 @@ public class LootTableDatagen extends FabricBlockLootTableProvider {
                         // TODO: EntityTarget needs to be "block_entity" not "THIS", need to figure
                         // out a way to make that happen.
                         ItemEntry.builder(sign)
-                                .apply(CopyNbtLootFunction.builder(EntityTarget.THIS)
+                                .apply(CopyNbtLootFunction.builder(EntityReference.TARGET_ENTITY)
                                         .withOperation("front_text", "BlockEntityTag.front_text")
                                         .withOperation("back_text", "BlockEntityTag.back_text")
                                         .withOperation("is_waxed", "BlockEntityTag.is_waxed")

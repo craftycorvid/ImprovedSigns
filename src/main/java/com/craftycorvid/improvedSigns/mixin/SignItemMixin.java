@@ -1,5 +1,6 @@
 package com.craftycorvid.improvedSigns.mixin;
 
+import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,11 +12,11 @@ import com.craftycorvid.improvedSigns.config.ModConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SignItem;
 import net.minecraft.item.VerticallyAttachableBlockItem;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -33,8 +34,9 @@ public class SignItemMixin extends VerticallyAttachableBlockItem {
             cancellable = true)
     protected void postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player,
             ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> info) {
-        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
-        if (nbtComponent != null && nbtComponent.contains("BlockEntityTag")) {
+        Optional<NbtCompound> optNbtCompound =
+                stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getCompound("BlockEntityTag");
+        if (optNbtCompound.isPresent()) {
             info.cancel();
         }
     }

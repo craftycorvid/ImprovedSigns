@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
 }
 
 version = "${project.mod_version}+mc${project.minecraft_version}"
@@ -52,7 +52,7 @@ dependencies {
 	include("maven.modrinth:midnightlib:${project.midnightlib_version}")
 	modImplementation("maven.modrinth:midnightlib:${project.midnightlib_version}")
 
-	modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}")
+	// modRuntimeOnly ("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {

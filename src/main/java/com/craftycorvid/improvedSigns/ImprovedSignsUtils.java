@@ -10,7 +10,6 @@ import net.minecraft.block.entity.SignText;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -71,25 +70,28 @@ public class ImprovedSignsUtils {
         if (!ModConfig.serverSideSignTextPreview)
             return;
 
-        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
-        if (nbtComponent != null && nbtComponent.contains("BlockEntityTag")) {
-            NbtCompound nbtCompound = nbtComponent.copyNbt().getCompound("BlockEntityTag").get();
-            Optional<List<MutableText>> front = parseSignCustomData(nbtCompound, "front_text");
-            Optional<List<MutableText>> back = parseSignCustomData(nbtCompound, "back_text");
+        stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getCompound("BlockEntityTag")
+                .ifPresent(nbtCompound -> {
+                    Optional<List<MutableText>> front =
+                            parseSignCustomData(nbtCompound, "front_text");
+                    Optional<List<MutableText>> back =
+                            parseSignCustomData(nbtCompound, "back_text");
 
-            List<Text> textList = new ArrayList<>();
-            front.ifPresent(texts -> {
-                textList.add(Text.of("Front:").copy().setStyle(Style.EMPTY.withItalic(false)));
-                textList.addAll(texts);
-            });
-            back.ifPresent(texts -> {
-                textList.add(Text.of("Back:").copy().setStyle(Style.EMPTY.withItalic(false)));
-                textList.addAll(texts);
-            });
-            textList.removeIf(text -> text.getString().isEmpty());
+                    List<Text> textList = new ArrayList<>();
+                    front.ifPresent(texts -> {
+                        textList.add(
+                                Text.of("Front:").copy().setStyle(Style.EMPTY.withItalic(false)));
+                        textList.addAll(texts);
+                    });
+                    back.ifPresent(texts -> {
+                        textList.add(
+                                Text.of("Back:").copy().setStyle(Style.EMPTY.withItalic(false)));
+                        textList.addAll(texts);
+                    });
+                    textList.removeIf(text -> text.getString().isEmpty());
 
-            stack.applyComponentsFrom(ComponentMap.builder()
-                    .add(DataComponentTypes.LORE, new LoreComponent(textList)).build());
-        }
+                    stack.applyComponentsFrom(ComponentMap.builder()
+                            .add(DataComponentTypes.LORE, new LoreComponent(textList)).build());
+                });
     }
 }
