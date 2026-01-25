@@ -3,7 +3,7 @@ package com.craftycorvid.improvedSigns.datagen;
 import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.NotNull;
 
 public class RecipeDatagen extends FabricRecipeProvider {
     public RecipeDatagen(FabricDataOutput dataOutput,
@@ -21,7 +22,7 @@ public class RecipeDatagen extends FabricRecipeProvider {
     }
 
     @Override
-    public RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup,
+    public @NotNull RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup,
             RecipeOutput exporter) {
         return new RecipeProvider(registryLookup, exporter) {
             @Override
@@ -54,7 +55,8 @@ public class RecipeDatagen extends FabricRecipeProvider {
 
             public void generateClearSignRecipe(RecipeOutput exporter, ItemLike sign) {
                 shapeless(RecipeCategory.DECORATIONS, sign).requires(sign)
-                        .unlockedBy("has_sign", InventoryChangeTrigger.TriggerInstance.hasItems(sign))
+                        .unlockedBy("has_sign",
+                                InventoryChangeTrigger.TriggerInstance.hasItems(sign))
                         .save(exporter, ResourceKey.create(Registries.RECIPE,
                                 getRecipeIdentifier(BuiltInRegistries.ITEM.getKey(sign.asItem()))));
             }
