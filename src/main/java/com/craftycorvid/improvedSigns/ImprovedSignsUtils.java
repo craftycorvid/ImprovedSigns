@@ -5,64 +5,67 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.SignText;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.NbtCompound;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class ImprovedSignsUtils {
-    public static ActionResult handlePassthrough(PlayerEntity player, World world, BlockPos pos,
+    public static InteractionResult handlePassthrough(Player player, Level world, BlockPos pos,
             Direction oppositeDirection) {
-        BlockPos hangingPos = pos.add(oppositeDirection.getOffsetX(),
-                oppositeDirection.getOffsetY(), oppositeDirection.getOffsetZ());
+        BlockPos hangingPos = pos.offset(oppositeDirection.getStepX(), oppositeDirection.getStepY(),
+                oppositeDirection.getStepZ());
         BlockState hangingState = world.getBlockState(hangingPos);
-        Vec3d hanginPosVec3d = new Vec3d(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
+        Vec3 hanginPosVec3d = new Vec3(hangingPos.getX(), hangingPos.getY(), hangingPos.getZ());
         BlockHitResult hangingHitResult =
                 new BlockHitResult(hanginPosVec3d, oppositeDirection, hangingPos, false);
-        return hangingState.onUse(world, player, hangingHitResult);
+        return hangingState.useWithoutItem(world, player, hangingHitResult);
     }
 
-    public static Optional<ItemStack> getItemHand(PlayerEntity player, Item item) {
-        ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
-        if (mainHandItem.isOf(item))
+    public static Optional<ItemStack> getItemHand(Player player, Item item) {
+        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        if (mainHandItem.is(item))
             return Optional.of(mainHandItem);
         return Optional.empty();
     }
 
-    public static Optional<ItemStack> getSignHand(PlayerEntity player) {
-        ItemStack mainHandItem = player.getEquippedStack(EquipmentSlot.MAINHAND);
+    public static Optional<ItemStack> getSignHand(Player player) {
+        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
         if (mainHandItem.getItem() instanceof SignItem)
             return Optional.of(mainHandItem);
         return Optional.empty();
     }
 
-    private static Optional<List<MutableText>> parseSignCustomData(NbtCompound nbtCompound,
+    private static Optional<List<MutableComponent>> parseSignCustomData(CompoundTag nbtCompound,
             String key) {
-        return SignText.CODEC.parse(NbtOps.INSTANCE, nbtCompound.getCompoundOrEmpty(key)).result()
-                .map(signText -> Arrays.stream(signText.getMessages(false)).map(text -> {
+        return SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbtCompound.getCompoundOrEmpty(key))
+                .result().map(signText -> Arrays.stream(signText.getMessages(false)).map(text -> {
                     int color = signText.getColor().equals(DyeColor.BLACK)
-                            ? Formatting.DARK_PURPLE.getColorValue()
-                            : signText.getColor().getSignColor();
-                    return text.copy().setStyle(Style.EMPTY.withItalic(signText.isGlowing())
-                            .withColor(color).withShadowColor(Formatting.WHITE.getColorValue()));
+                            ? ChatFormatting.DARK_PURPLE.getColor()
+                            : signText.getColor().getTextColor();
+                    return text.copy().setStyle(Style.EMPTY.withItalic(signText.hasGlowingText())
+                            .withColor(color).withShadowColor(ChatFormatting.WHITE.getColor()));
                 }).toList());
 
     }
@@ -71,28 +74,28 @@ public class ImprovedSignsUtils {
         if (!MOD_CONFIG.serverSideSignTextPreview)
             return;
 
-        stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt()
+        stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag()
                 .getCompound("BlockEntityTag").ifPresent(nbtCompound -> {
-                    Optional<List<MutableText>> front =
+                    Optional<List<MutableComponent>> front =
                             parseSignCustomData(nbtCompound, "front_text");
-                    Optional<List<MutableText>> back =
+                    Optional<List<MutableComponent>> back =
                             parseSignCustomData(nbtCompound, "back_text");
 
-                    List<Text> textList = new ArrayList<>();
+                    List<Component> textList = new ArrayList<>();
                     front.ifPresent(texts -> {
-                        textList.add(
-                                Text.of("Front:").copy().setStyle(Style.EMPTY.withItalic(false)));
+                        textList.add(Component.nullToEmpty("Front:").copy()
+                                .setStyle(Style.EMPTY.withItalic(false)));
                         textList.addAll(texts);
                     });
                     back.ifPresent(texts -> {
-                        textList.add(
-                                Text.of("Back:").copy().setStyle(Style.EMPTY.withItalic(false)));
+                        textList.add(Component.nullToEmpty("Back:").copy()
+                                .setStyle(Style.EMPTY.withItalic(false)));
                         textList.addAll(texts);
                     });
                     textList.removeIf(text -> text.getString().isEmpty());
 
-                    stack.applyComponentsFrom(ComponentMap.builder()
-                            .add(DataComponentTypes.LORE, new LoreComponent(textList)).build());
+                    stack.applyComponents(DataComponentMap.builder()
+                            .set(DataComponents.LORE, new ItemLore(textList)).build());
                 });
     }
 }

@@ -1,42 +1,42 @@
 package com.craftycorvid.improvedSigns.mixin;
 
-import net.minecraft.block.AbstractSignBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.block.entity.SignText;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.SignBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(AbstractSignBlock.class)
-public abstract class AbstractSignBlockMixin extends BlockWithEntity {
-        protected AbstractSignBlockMixin(Settings settings) {
+@Mixin(SignBlock.class)
+public abstract class AbstractSignBlockMixin extends BaseEntityBlock {
+        protected AbstractSignBlockMixin(Properties settings) {
                 super(settings);
         }
 
         @Override
-        public void onPlaced(World world, BlockPos pos, BlockState state,
+        public void setPlacedBy(Level world, BlockPos pos, BlockState state,
                         @Nullable LivingEntity placer, ItemStack itemStack) {
-                super.onPlaced(world, pos, state, placer, itemStack);
-                itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)
-                                .copyNbt().getCompound("BlockEntityTag").ifPresent(nbtCompound -> {
+                super.setPlacedBy(world, pos, state, placer, itemStack);
+                itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+                                .copyTag().getCompound("BlockEntityTag").ifPresent(nbtCompound -> {
                                         BlockEntity blockEntity = world.getBlockEntity(pos);
                                         if (blockEntity instanceof SignBlockEntity signBlockEntity) {
-                                                signBlockEntity.setText(SignText.CODEC.parse(
+                                                signBlockEntity.setText(SignText.DIRECT_CODEC.parse(
                                                                 NbtOps.INSTANCE,
                                                                 nbtCompound.getCompoundOrEmpty(
                                                                                 "front_text"))
                                                                 .result().orElse(new SignText()),
                                                                 true);
-                                                signBlockEntity.setText(SignText.CODEC.parse(
+                                                signBlockEntity.setText(SignText.DIRECT_CODEC.parse(
                                                                 NbtOps.INSTANCE,
                                                                 nbtCompound.getCompoundOrEmpty(
                                                                                 "back_text"))

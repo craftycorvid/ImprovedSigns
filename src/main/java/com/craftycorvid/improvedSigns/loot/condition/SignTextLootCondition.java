@@ -2,22 +2,21 @@ package com.craftycorvid.improvedSigns.loot.condition;
 
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.condition.LootConditionType;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.screen.ScreenTexts;
-
 import java.util.Arrays;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
-public class SignTextLootCondition implements LootCondition {
+public class SignTextLootCondition implements LootItemCondition {
     private static final SignTextLootCondition INSTANCE = new SignTextLootCondition();
 
     public SignTextLootCondition() {}
 
     @Override
-    public LootConditionType getType() {
+    public LootItemConditionType getType() {
         return LootConditionTypes.SIGN_TEXT;
     }
 
@@ -26,19 +25,19 @@ public class SignTextLootCondition implements LootCondition {
         if (!MOD_CONFIG.enableSignRetain)
             return false;
         SignBlockEntity signBlockEntity =
-                (SignBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
+                (SignBlockEntity) lootContext.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (signBlockEntity == null)
             return false;
         if (Arrays.stream(signBlockEntity.getText(true).getMessages(false))
-                .anyMatch(text -> !text.equals(ScreenTexts.EMPTY)))
+                .anyMatch(text -> !text.equals(CommonComponents.EMPTY)))
             return true;
         if (Arrays.stream(signBlockEntity.getText(false).getMessages(false))
-                .anyMatch(text -> !text.equals(ScreenTexts.EMPTY)))
+                .anyMatch(text -> !text.equals(CommonComponents.EMPTY)))
             return true;
         return false;
     }
 
-    public static LootCondition.Builder builder() {
+    public static LootItemCondition.Builder builder() {
         return () -> {
             return INSTANCE;
         };

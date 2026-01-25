@@ -3,60 +3,60 @@ package com.craftycorvid.improvedSigns.datagen;
 import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.advancement.criterion.InventoryChangedCriterion;
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.data.recipe.RecipeGenerator;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 public class RecipeDatagen extends FabricRecipeProvider {
     public RecipeDatagen(FabricDataOutput dataOutput,
-            CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+            CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(dataOutput, registriesFuture);
     }
 
     @Override
-    public RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registryLookup,
-            RecipeExporter exporter) {
-        return new RecipeGenerator(registryLookup, exporter) {
+    public RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup,
+            RecipeOutput exporter) {
+        return new RecipeProvider(registryLookup, exporter) {
             @Override
-            public void generate() {
-                generateClearSignRecipe(exporter, Items.OAK_SIGN);
-                generateClearSignRecipe(exporter, Items.OAK_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.SPRUCE_SIGN);
-                generateClearSignRecipe(exporter, Items.SPRUCE_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.BIRCH_SIGN);
-                generateClearSignRecipe(exporter, Items.BIRCH_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.JUNGLE_SIGN);
-                generateClearSignRecipe(exporter, Items.JUNGLE_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.ACACIA_SIGN);
-                generateClearSignRecipe(exporter, Items.ACACIA_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.DARK_OAK_SIGN);
-                generateClearSignRecipe(exporter, Items.DARK_OAK_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.MANGROVE_SIGN);
-                generateClearSignRecipe(exporter, Items.MANGROVE_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.CHERRY_SIGN);
-                generateClearSignRecipe(exporter, Items.CHERRY_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.PALE_OAK_SIGN);
-                generateClearSignRecipe(exporter, Items.PALE_OAK_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.BAMBOO_SIGN);
-                generateClearSignRecipe(exporter, Items.BAMBOO_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.CRIMSON_SIGN);
-                generateClearSignRecipe(exporter, Items.CRIMSON_HANGING_SIGN);
-                generateClearSignRecipe(exporter, Items.WARPED_SIGN);
-                generateClearSignRecipe(exporter, Items.WARPED_HANGING_SIGN);
+            public void buildRecipes() {
+                generateClearSignRecipe(output, Items.OAK_SIGN);
+                generateClearSignRecipe(output, Items.OAK_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.SPRUCE_SIGN);
+                generateClearSignRecipe(output, Items.SPRUCE_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.BIRCH_SIGN);
+                generateClearSignRecipe(output, Items.BIRCH_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.JUNGLE_SIGN);
+                generateClearSignRecipe(output, Items.JUNGLE_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.ACACIA_SIGN);
+                generateClearSignRecipe(output, Items.ACACIA_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.DARK_OAK_SIGN);
+                generateClearSignRecipe(output, Items.DARK_OAK_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.MANGROVE_SIGN);
+                generateClearSignRecipe(output, Items.MANGROVE_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.CHERRY_SIGN);
+                generateClearSignRecipe(output, Items.CHERRY_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.PALE_OAK_SIGN);
+                generateClearSignRecipe(output, Items.PALE_OAK_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.BAMBOO_SIGN);
+                generateClearSignRecipe(output, Items.BAMBOO_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.CRIMSON_SIGN);
+                generateClearSignRecipe(output, Items.CRIMSON_HANGING_SIGN);
+                generateClearSignRecipe(output, Items.WARPED_SIGN);
+                generateClearSignRecipe(output, Items.WARPED_HANGING_SIGN);
             }
 
-            public void generateClearSignRecipe(RecipeExporter exporter, ItemConvertible sign) {
-                createShapeless(RecipeCategory.DECORATIONS, sign).input(sign)
-                        .criterion("has_sign", InventoryChangedCriterion.Conditions.items(sign))
-                        .offerTo(exporter, RegistryKey.of(RegistryKeys.RECIPE,
-                                getRecipeIdentifier(Registries.ITEM.getId(sign.asItem()))));
+            public void generateClearSignRecipe(RecipeOutput exporter, ItemLike sign) {
+                shapeless(RecipeCategory.DECORATIONS, sign).requires(sign)
+                        .unlockedBy("has_sign", InventoryChangeTrigger.TriggerInstance.hasItems(sign))
+                        .save(exporter, ResourceKey.create(Registries.RECIPE,
+                                getRecipeIdentifier(BuiltInRegistries.ITEM.getKey(sign.asItem()))));
             }
         };
 

@@ -4,19 +4,19 @@ import java.util.concurrent.CompletableFuture;
 import com.craftycorvid.improvedSigns.loot.condition.SignTextLootCondition;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext.EntityReference;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.function.CopyNbtLootFunction;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.LootContext.EntityTarget;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.CopyCustomDataFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public class LootTableDatagen extends FabricBlockLootTableProvider {
     public LootTableDatagen(FabricDataOutput output,
-            CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+            CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(output, registryLookup);
     }
 
@@ -49,15 +49,15 @@ public class LootTableDatagen extends FabricBlockLootTableProvider {
     }
 
     public void addSignNBTDropTable(Block sign) {
-        this.addDrop(sign, LootTable.builder().pool(this.addSurvivesExplosionCondition(sign,
-                LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with(
+        this.add(sign, LootTable.lootTable().withPool(this.applyExplosionCondition(sign,
+                LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(
                         // TODO: EntityTarget needs to be "block_entity" not "THIS", need to figure
                         // out a way to make that happen.
-                        ItemEntry.builder(sign)
-                                .apply(CopyNbtLootFunction.builder(EntityReference.TARGET_ENTITY)
-                                        .withOperation("front_text", "BlockEntityTag.front_text")
-                                        .withOperation("back_text", "BlockEntityTag.back_text")
-                                        .withOperation("is_waxed", "BlockEntityTag.is_waxed")
-                                        .conditionally(SignTextLootCondition.builder()))))));
+                        LootItem.lootTableItem(sign)
+                                .apply(CopyCustomDataFunction.copyData(EntityTarget.TARGET_ENTITY)
+                                        .copy("front_text", "BlockEntityTag.front_text")
+                                        .copy("back_text", "BlockEntityTag.back_text")
+                                        .copy("is_waxed", "BlockEntityTag.is_waxed")
+                                        .when(SignTextLootCondition.builder()))))));
     }
 }

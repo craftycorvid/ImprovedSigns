@@ -1,35 +1,33 @@
 package com.craftycorvid.improvedSigns.event;
 
 import java.util.Optional;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
 public class UseItemFrameEntityCallback {
-    public static ActionResult onUseItemFrameEntityCallback(PlayerEntity player, World world,
-            Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (!(world instanceof net.minecraft.server.world.ServerWorld))
-            return ActionResult.PASS;
-        if (!(entity instanceof ItemFrameEntity frameEntity))
-            return ActionResult.PASS;
+    public static InteractionResult onUseItemFrameEntityCallback(Player player, Level world,
+            InteractionHand hand, Entity entity, EntityHitResult hitResult) {
+        if (!(world instanceof net.minecraft.server.level.ServerLevel))
+            return InteractionResult.PASS;
+        if (!(entity instanceof ItemFrame frameEntity))
+            return InteractionResult.PASS;
 
-        if (!hand.equals(Hand.MAIN_HAND))
-            return ActionResult.FAIL;
+        if (!hand.equals(InteractionHand.MAIN_HAND))
+            return InteractionResult.FAIL;
 
-        if (MOD_CONFIG.enableInvisibleFrames && player.isSneaking()) {
+        if (MOD_CONFIG.enableInvisibleFrames && player.isShiftKeyDown()) {
             Item item;
             switch (MOD_CONFIG.invisibleFrameItem) {
                 case GLASS_PANE:
@@ -44,23 +42,23 @@ public class UseItemFrameEntityCallback {
             Optional<ItemStack> itemOption = ImprovedSignsUtils.getItemHand(player, item);
             if (itemOption.isPresent()) {
                 if (entity.isInvisible()) {
-                    return ActionResult.FAIL;
+                    return InteractionResult.FAIL;
                 }
-                if (frameEntity.getHeldItemStack().isOf(Items.AIR)) {
-                    return ActionResult.PASS;
+                if (frameEntity.getItem().is(Items.AIR)) {
+                    return InteractionResult.PASS;
                 }
-                itemOption.get().decrementUnlessCreative(1, player);
+                itemOption.get().consume(1, player);
                 entity.setInvisible(true);
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        if (MOD_CONFIG.enableFramePassthrough && !player.isSneaking()) {
-            BlockPos pos = entity.getBlockPos();
-            Direction oppositeDirection = entity.getHorizontalFacing().getOpposite();
+        if (MOD_CONFIG.enableFramePassthrough && !player.isShiftKeyDown()) {
+            BlockPos pos = entity.blockPosition();
+            Direction oppositeDirection = entity.getDirection().getOpposite();
             return ImprovedSignsUtils.handlePassthrough(player, world, pos, oppositeDirection);
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 }

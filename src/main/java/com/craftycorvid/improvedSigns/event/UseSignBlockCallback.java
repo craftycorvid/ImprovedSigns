@@ -5,109 +5,109 @@ import java.util.Optional;
 import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.block.entity.SignText;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.DecorationItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SignChangingItem;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.HangingEntityItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SignApplicator;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class UseSignBlockCallback {
-    public static ActionResult onUseSignBlockCallback(PlayerEntity player, World world, Hand hand,
+    public static InteractionResult onUseSignBlockCallback(Player player, Level world, InteractionHand hand,
             BlockHitResult hitResult) {
-        if (!(world instanceof net.minecraft.server.world.ServerWorld))
-            return ActionResult.PASS;
+        if (!(world instanceof net.minecraft.server.level.ServerLevel))
+            return InteractionResult.PASS;
         BlockPos pos = hitResult.getBlockPos();
         BlockEntity blockEntity = world.getBlockEntity(pos);
         BlockState blockState = world.getBlockState(pos);
         if (!(blockEntity instanceof SignBlockEntity signBlockEntity))
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
 
-        if (hand.equals(Hand.OFF_HAND))
-            return ActionResult.PASS;
+        if (hand.equals(InteractionHand.OFF_HAND))
+            return InteractionResult.PASS;
 
-        if (!player.isSneaking()) {
+        if (!player.isShiftKeyDown()) {
             Optional<ItemStack> signHand = ImprovedSignsUtils.getSignHand(player);
             if (MOD_CONFIG.enableSignCopy && signHand.isPresent()) {
                 ItemStack sign = signHand.get();
-                NbtCompound nbt =
-                        sign.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)
-                                .copyNbt();
-                NbtCompound blockEntityTag = nbt.getCompoundOrEmpty("BlockEntityTag");
+                CompoundTag nbt =
+                        sign.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+                                .copyTag();
+                CompoundTag blockEntityTag = nbt.getCompoundOrEmpty("BlockEntityTag");
                 SignText frontText = signBlockEntity.getFrontText();
-                SignText.CODEC.encodeStart(NbtOps.INSTANCE, frontText).result()
+                SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, frontText).result()
                         .ifPresent(textNbt -> {
-                            NbtCompound text = (NbtCompound) textNbt;
+                            CompoundTag text = (CompoundTag) textNbt;
                             if (!MOD_CONFIG.retainDyeOnSignCopy) {
                                 text.putBoolean("has_glowing_text", false);
-                                text.putInt("color", DyeColor.BLACK.getSignColor());
+                                text.putInt("color", DyeColor.BLACK.getTextColor());
                             }
                             blockEntityTag.put("front_text", text);
                         });
                 SignText backText = signBlockEntity.getBackText();
-                SignText.CODEC.encodeStart(NbtOps.INSTANCE, backText).result()
+                SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, backText).result()
                         .ifPresent(textNbt -> {
-                            NbtCompound text = (NbtCompound) textNbt;
+                            CompoundTag text = (CompoundTag) textNbt;
                             if (!MOD_CONFIG.retainDyeOnSignCopy) {
                                 text.putBoolean("has_glowing_text", false);
-                                text.putInt("color", DyeColor.BLACK.getSignColor());
+                                text.putInt("color", DyeColor.BLACK.getTextColor());
                             }
                             blockEntityTag.put("back_text", text);
                         });
                 blockEntityTag.putBoolean("is_waxed", signBlockEntity.isWaxed());
                 nbt.put("BlockEntityTag", blockEntityTag);
-                sign.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
-                player.sendMessage(
-                        Text.literal("Sign text copied to " + sign.getCount() + " signs"), true);
+                sign.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
+                player.displayClientMessage(
+                        Component.literal("Sign text copied to " + sign.getCount() + " signs"), true);
                 ImprovedSignsUtils.appendSignTooltip(sign);
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
 
             if (MOD_CONFIG.enableSignPassthrough) {
                 BlockState state = world.getBlockState(pos);
-                if (state.contains(HorizontalFacingBlock.FACING)) {
+                if (state.hasProperty(HorizontalDirectionalBlock.FACING)) {
                     Direction oppositeDirection =
-                            state.get(HorizontalFacingBlock.FACING).getOpposite();
+                            state.getValue(HorizontalDirectionalBlock.FACING).getOpposite();
                     return ImprovedSignsUtils.handlePassthrough(player, world, pos,
                             oppositeDirection);
                 }
             }
 
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         }
 
         if (MOD_CONFIG.enableSignPassthrough) {
-            ItemStack handItemStack = player.getStackInHand(Hand.MAIN_HAND);
+            ItemStack handItemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
             Item handItem = handItemStack.getItem();
-            if (handItem instanceof SignChangingItem) {
-                return blockState.onUseWithItem(handItemStack, world, player, hand, hitResult);
+            if (handItem instanceof SignApplicator) {
+                return blockState.useItemOn(handItemStack, world, player, hand, hitResult);
             }
 
-            Item offhandItem = player.getStackInHand(Hand.OFF_HAND).getItem();
-            if (!(handItem instanceof BlockItem || handItem instanceof DecorationItem
-                    || offhandItem instanceof BlockItem || offhandItem instanceof DecorationItem)) {
-                return blockState.onUse(world, player, hitResult);
+            Item offhandItem = player.getItemInHand(InteractionHand.OFF_HAND).getItem();
+            if (!(handItem instanceof BlockItem || handItem instanceof HangingEntityItem
+                    || offhandItem instanceof BlockItem || offhandItem instanceof HangingEntityItem)) {
+                return blockState.useWithoutItem(world, player, hitResult);
             }
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
 
     }
 }
