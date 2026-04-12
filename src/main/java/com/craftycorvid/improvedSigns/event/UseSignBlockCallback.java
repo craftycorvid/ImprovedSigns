@@ -74,8 +74,8 @@ public class UseSignBlockCallback {
                 blockEntityTag.putBoolean("is_waxed", signBlockEntity.isWaxed());
                 nbt.put("BlockEntityTag", blockEntityTag);
                 sign.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
-                player.displayClientMessage(
-                        Component.literal("Sign text copied to " + sign.getCount() + " signs"), true);
+                player.sendSystemMessage(
+                        Component.literal("Sign text copied to " + sign.getCount() + " signs"));
                 ImprovedSignsUtils.appendSignTooltip(sign);
                 return InteractionResult.SUCCESS;
             }

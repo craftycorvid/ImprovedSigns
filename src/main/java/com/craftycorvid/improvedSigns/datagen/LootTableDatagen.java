@@ -2,8 +2,8 @@ package com.craftycorvid.improvedSigns.datagen;
 
 import java.util.concurrent.CompletableFuture;
 import com.craftycorvid.improvedSigns.loot.condition.SignTextLootCondition;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -14,8 +14,8 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyCustomDataFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
-public class LootTableDatagen extends FabricBlockLootTableProvider {
-    public LootTableDatagen(FabricDataOutput output,
+public class LootTableDatagen extends FabricBlockLootSubProvider {
+    public LootTableDatagen(FabricPackOutput output,
             CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(output, registryLookup);
     }

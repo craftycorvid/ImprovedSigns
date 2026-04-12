@@ -16,6 +16,7 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 @Mixin(ItemFrame.class)
 public abstract class ItemFrameEntityMixin extends HangingEntity {
@@ -25,7 +26,7 @@ public abstract class ItemFrameEntityMixin extends HangingEntity {
     }
 
     @Inject(at = @At("HEAD"), method = "interact", cancellable = true)
-    void onSetRotation(final Player player, final InteractionHand hand,
+    void onSetRotation(final Player player, final InteractionHand hand, final Vec3 location,
             final CallbackInfoReturnable<InteractionResult> info) {
         if (MOD_CONFIG.enableFramePassthrough && !player.isShiftKeyDown()) {
             info.setReturnValue(InteractionResult.FAIL);

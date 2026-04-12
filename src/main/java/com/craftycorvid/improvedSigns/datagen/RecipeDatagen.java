@@ -1,7 +1,7 @@
 package com.craftycorvid.improvedSigns.datagen;
 
 import java.util.concurrent.CompletableFuture;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 public class RecipeDatagen extends FabricRecipeProvider {
-    public RecipeDatagen(FabricDataOutput dataOutput,
+    public RecipeDatagen(FabricPackOutput dataOutput,
             CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(dataOutput, registriesFuture);
     }

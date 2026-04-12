@@ -7,16 +7,16 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 public class SignTextLootCondition implements LootItemCondition {
-    private static final SignTextLootCondition INSTANCE = new SignTextLootCondition();
+    public static final SignTextLootCondition INSTANCE = new SignTextLootCondition();
 
     public SignTextLootCondition() {}
 
     @Override
-    public LootItemConditionType getType() {
+    public MapCodec<SignTextLootCondition> codec() {
         return LootConditionTypes.SIGN_TEXT;
     }
 
