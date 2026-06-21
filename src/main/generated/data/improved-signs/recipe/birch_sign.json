@@ -1,11 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "minecraft:birch_sign"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:birch_sign"
   }
 }

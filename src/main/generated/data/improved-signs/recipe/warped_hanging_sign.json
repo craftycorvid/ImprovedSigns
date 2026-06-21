@@ -1,11 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "minecraft:warped_hanging_sign"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:warped_hanging_sign"
   }
 }
