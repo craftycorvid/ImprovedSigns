@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
@@ -16,6 +15,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -62,10 +62,10 @@ public class ImprovedSignsUtils {
         return SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbtCompound.getCompoundOrEmpty(key))
                 .result().map(signText -> Arrays.stream(signText.getMessages(false)).map(text -> {
                     int color = signText.getColor().equals(DyeColor.BLACK)
-                            ? ChatFormatting.DARK_PURPLE.getColor()
+                            ? TextColor.DARK_PURPLE.getValue()
                             : signText.getColor().getTextColor();
                     return text.copy().setStyle(Style.EMPTY.withItalic(signText.hasGlowingText())
-                            .withColor(color).withShadowColor(ChatFormatting.WHITE.getColor()));
+                            .withColor(color).withShadowColor(TextColor.WHITE.getValue()));
                 }).toList());
 
     }
