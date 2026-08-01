@@ -4,11 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.craftycorvid.improvedSigns.config.ModConfig;
+import com.craftycorvid.improvedSigns.event.ItemFrameReachCallback;
 import com.craftycorvid.improvedSigns.event.UseItemFrameEntityCallback;
 import com.craftycorvid.improvedSigns.event.UseSignBlockCallback;
 import com.craftycorvid.improvedSigns.loot.condition.LootConditionTypes;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
@@ -28,5 +31,14 @@ public class ImprovedSignsMod implements ModInitializer {
         UseBlockCallback.EVENT.register(UseSignBlockCallback::onUseSignBlockCallback);
 
         UseEntityCallback.EVENT.register(UseItemFrameEntityCallback::onUseItemFrameEntityCallback);
+
+        if (MOD_CONFIG.enableFrameReachExtension) {
+            ServerPlayerEvents.JOIN.register(ItemFrameReachCallback::extendEntityReach);
+            ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer,
+                    alive) -> ItemFrameReachCallback.extendEntityReach(newPlayer));
+
+            UseEntityCallback.EVENT.register(ItemFrameReachCallback::limitReachToItemFrames);
+            AttackEntityCallback.EVENT.register(ItemFrameReachCallback::limitReachToItemFrames);
+        }
     }
 }

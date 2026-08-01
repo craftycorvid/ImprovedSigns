@@ -30,6 +30,9 @@ public class ModConfig {
     public boolean retainDyeOnSignCopy = false;
 
     public boolean enableFramePassthrough = true;
+    // Note: clients still target other entities at the longer reach, the server just refuses those
+    public boolean enableFrameReachExtension = false;
+    public boolean enableFrameBlockSharing = false;
     public boolean enableInvisibleFrames = true;
     public InvisibleFrameEnum invisibleFrameItem = InvisibleFrameEnum.AMETHYST_SHARD;
 
