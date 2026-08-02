@@ -38,6 +38,7 @@ jobs:
           version: "${{env.VERSION}}"
           version-type: release
           changelog: "${{env.CHANGE_LOG}}"
+          environment: server | singleplayer
 
           loaders: fabric
           files: |
