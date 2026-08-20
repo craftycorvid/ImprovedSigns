@@ -2,6 +2,8 @@
 
 This mod is only for Fabric/Quilt Servers(or Single-Player) and requires [Fabric API](https://modrinth.com/mod/fabric-api) or [Quilted Fabric API](https://modrinth.com/mod/qsl)
 
+Actively maintained versions: 26.2, 1.21.1
+
 ### Features
 
 - **Sign & Item Frame Passthrough:** Access chests, shulker boxes, barrels, etc behind signs by right-clicking the sign
