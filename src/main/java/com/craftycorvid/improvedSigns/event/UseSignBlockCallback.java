@@ -51,26 +51,10 @@ public class UseSignBlockCallback {
                         sign.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
                                 .copyTag();
                 CompoundTag blockEntityTag = nbt.getCompoundOrEmpty("BlockEntityTag");
-                SignText frontText = signBlockEntity.getFrontText();
-                SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, frontText).result()
-                        .ifPresent(textNbt -> {
-                            CompoundTag text = (CompoundTag) textNbt;
-                            if (!MOD_CONFIG.retainDyeOnSignCopy) {
-                                text.putBoolean("has_glowing_text", false);
-                                text.putInt("color", DyeColor.BLACK.getTextColor());
-                            }
-                            blockEntityTag.put("front_text", text);
-                        });
-                SignText backText = signBlockEntity.getBackText();
-                SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, backText).result()
-                        .ifPresent(textNbt -> {
-                            CompoundTag text = (CompoundTag) textNbt;
-                            if (!MOD_CONFIG.retainDyeOnSignCopy) {
-                                text.putBoolean("has_glowing_text", false);
-                                text.putInt("color", DyeColor.BLACK.getTextColor());
-                            }
-                            blockEntityTag.put("back_text", text);
-                        });
+                encodeSignText(signBlockEntity.getFrontText())
+                        .ifPresent(text -> blockEntityTag.put("front_text", text));
+                encodeSignText(signBlockEntity.getBackText())
+                        .ifPresent(text -> blockEntityTag.put("back_text", text));
                 blockEntityTag.putBoolean("is_waxed", signBlockEntity.isWaxed());
                 nbt.put("BlockEntityTag", blockEntityTag);
                 sign.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
@@ -110,4 +94,11 @@ public class UseSignBlockCallback {
         return InteractionResult.PASS;
 
     }
+
+    private static Optional<net.minecraft.nbt.Tag> encodeSignText(SignText signText) {
+        if (!MOD_CONFIG.retainDyeOnSignCopy)
+            signText = signText.setColor(DyeColor.BLACK).setHasGlowingText(false);
+        return SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, signText).result();
+    }
+
 }

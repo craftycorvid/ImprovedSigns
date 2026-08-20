@@ -22,3 +22,4 @@ remappedSrc/
 secrets.gradle
 
 libs/
+logs/
