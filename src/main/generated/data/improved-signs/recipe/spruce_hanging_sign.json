@@ -1,9 +1,13 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "ingredients": [
-    "minecraft:spruce_hanging_sign"
+    {
+      "item": "minecraft:spruce_hanging_sign"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "minecraft:spruce_hanging_sign"
   }
 }

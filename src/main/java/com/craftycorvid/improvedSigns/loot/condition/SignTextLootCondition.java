@@ -7,8 +7,8 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 public class SignTextLootCondition implements LootItemCondition {
     public static final SignTextLootCondition INSTANCE = new SignTextLootCondition();
@@ -16,7 +16,7 @@ public class SignTextLootCondition implements LootItemCondition {
     public SignTextLootCondition() {}
 
     @Override
-    public MapCodec<SignTextLootCondition> codec() {
+    public LootItemConditionType getType() {
         return LootConditionTypes.SIGN_TEXT;
     }
 
@@ -25,7 +25,7 @@ public class SignTextLootCondition implements LootItemCondition {
         if (!MOD_CONFIG.enableSignRetain)
             return false;
         SignBlockEntity signBlockEntity =
-                (SignBlockEntity) lootContext.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+                (SignBlockEntity) lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (signBlockEntity == null)
             return false;
         if (Arrays.stream(signBlockEntity.getText(true).getMessages(false))

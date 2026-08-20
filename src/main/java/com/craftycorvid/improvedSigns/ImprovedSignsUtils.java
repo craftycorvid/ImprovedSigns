@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
@@ -15,7 +16,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -59,13 +59,13 @@ public class ImprovedSignsUtils {
 
     private static Optional<List<MutableComponent>> parseSignCustomData(CompoundTag nbtCompound,
             String key) {
-        return SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbtCompound.getCompoundOrEmpty(key))
-                .result().map(signText -> Arrays.stream(signText.getMessages(false)).map(text -> {
+        return SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbtCompound.getCompound(key)).result()
+                .map(signText -> Arrays.stream(signText.getMessages(false)).map(text -> {
                     int color = signText.getColor().equals(DyeColor.BLACK)
-                            ? TextColor.DARK_PURPLE.getValue()
+                            ? ChatFormatting.DARK_PURPLE.getColor()
                             : signText.getColor().getTextColor();
-                    return text.copy().setStyle(Style.EMPTY.withItalic(signText.hasGlowingText())
-                            .withColor(color).withShadowColor(TextColor.WHITE.getValue()));
+                    return text.copy().setStyle(
+                            Style.EMPTY.withItalic(signText.hasGlowingText()).withColor(color));
                 }).toList());
 
     }
@@ -74,28 +74,28 @@ public class ImprovedSignsUtils {
         if (!MOD_CONFIG.serverSideSignTextPreview)
             return;
 
-        stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag()
-                .getCompound("BlockEntityTag").ifPresent(nbtCompound -> {
-                    Optional<List<MutableComponent>> front =
-                            parseSignCustomData(nbtCompound, "front_text");
-                    Optional<List<MutableComponent>> back =
-                            parseSignCustomData(nbtCompound, "back_text");
+        CompoundTag nbtCompound = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+                .copyTag().getCompound("BlockEntityTag");
+        if (nbtCompound.isEmpty())
+            return;
 
-                    List<Component> textList = new ArrayList<>();
-                    front.ifPresent(texts -> {
-                        textList.add(Component.nullToEmpty("Front:").copy()
-                                .setStyle(Style.EMPTY.withItalic(false)));
-                        textList.addAll(texts);
-                    });
-                    back.ifPresent(texts -> {
-                        textList.add(Component.nullToEmpty("Back:").copy()
-                                .setStyle(Style.EMPTY.withItalic(false)));
-                        textList.addAll(texts);
-                    });
-                    textList.removeIf(text -> text.getString().isEmpty());
+        Optional<List<MutableComponent>> front = parseSignCustomData(nbtCompound, "front_text");
+        Optional<List<MutableComponent>> back = parseSignCustomData(nbtCompound, "back_text");
 
-                    stack.applyComponents(DataComponentMap.builder()
-                            .set(DataComponents.LORE, new ItemLore(textList)).build());
-                });
+        List<Component> textList = new ArrayList<>();
+        front.ifPresent(texts -> {
+            textList.add(
+                    Component.nullToEmpty("Front:").copy().setStyle(Style.EMPTY.withItalic(false)));
+            textList.addAll(texts);
+        });
+        back.ifPresent(texts -> {
+            textList.add(
+                    Component.nullToEmpty("Back:").copy().setStyle(Style.EMPTY.withItalic(false)));
+            textList.addAll(texts);
+        });
+        textList.removeIf(text -> text.getString().isEmpty());
+
+        stack.applyComponents(
+                DataComponentMap.builder().set(DataComponents.LORE, new ItemLore(textList)).build());
     }
 }

@@ -12,24 +12,22 @@ import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.HangingEntity;
-import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
-@Mixin(ItemFrame.class)
+@Mixin(net.minecraft.world.entity.decoration.ItemFrame.class)
 public abstract class ItemFrameEntityMixin extends HangingEntity {
-    protected ItemFrameEntityMixin(EntityType<? extends HangingEntity> entityType,
-            Level world) {
+    protected ItemFrameEntityMixin(EntityType<? extends HangingEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Inject(at = @At("HEAD"), method = "interact", cancellable = true)
-    void onSetRotation(final Player player, final InteractionHand hand, final Vec3 location,
+    void onSetRotation(final Player player, final InteractionHand hand,
             final CallbackInfoReturnable<InteractionResult> info) {
         if (MOD_CONFIG.enableFramePassthrough && !player.isShiftKeyDown()) {
             info.setReturnValue(InteractionResult.FAIL);
@@ -44,15 +42,17 @@ public abstract class ItemFrameEntityMixin extends HangingEntity {
     // survives() pops the frame when anything collides with it. Let it keep hanging as long as the
     // block sharing its space isn't a full block, so trapdoors, slabs, buttons etc. can cover it.
     @Redirect(at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/decoration/ItemFrame;hasLevelCollision(Lnet/minecraft/world/phys/AABB;)Z"),
+            target = "Lnet/minecraft/world/level/Level;noCollision(Lnet/minecraft/world/entity/Entity;)Z"),
             method = "survives")
-    boolean onCheckLevelCollision(final ItemFrame frame, final AABB popBox) {
-        if (!this.hasLevelCollision(popBox))
-            return false;
-        if (!MOD_CONFIG.enableFrameBlockSharing || !this.level().noBorderCollision(this, popBox))
+    boolean onCheckLevelCollision(final Level level, final Entity entity) {
+        if (level.noCollision(entity))
             return true;
 
-        return BlockPos.betweenClosedStream(popBox.deflate(1.0E-7)).anyMatch(
-                pos -> this.level().getBlockState(pos).isCollisionShapeFullBlock(this.level(), pos));
+        AABB popBox = entity.getBoundingBox();
+        if (!MOD_CONFIG.enableFrameBlockSharing || !level.getWorldBorder().isWithinBounds(popBox))
+            return false;
+
+        return BlockPos.betweenClosedStream(popBox.deflate(1.0E-7))
+                .noneMatch(pos -> level.getBlockState(pos).isCollisionShapeFullBlock(level, pos));
     }
 }

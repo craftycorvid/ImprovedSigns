@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    "minecraft:pale_oak_hanging_sign"
-  ],
-  "result": {
-    "id": "minecraft:pale_oak_hanging_sign"
-  }
-}

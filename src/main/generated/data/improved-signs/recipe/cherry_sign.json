@@ -1,9 +1,13 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "ingredients": [
-    "minecraft:cherry_sign"
+    {
+      "item": "minecraft:cherry_sign"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "minecraft:cherry_sign"
   }
 }

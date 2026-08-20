@@ -1,6 +1,5 @@
 package com.craftycorvid.improvedSigns.mixin;
 
-import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -25,8 +24,8 @@ import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 @Mixin(SignItem.class)
 public class SignItemMixin extends StandingAndWallBlockItem {
     public SignItemMixin(Block standingBlock, Block wallBlock,
-            Direction verticalAttachmentDirection, net.minecraft.world.item.Item.Properties settings) {
-        super(standingBlock, wallBlock, verticalAttachmentDirection, settings);
+            net.minecraft.world.item.Item.Properties settings, Direction verticalAttachmentDirection) {
+        super(standingBlock, wallBlock, settings, verticalAttachmentDirection);
     }
 
     @Inject(method = "updateCustomBlockEntityTag(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/block/state/BlockState;)Z", at = @At(value = "INVOKE",
@@ -34,10 +33,9 @@ public class SignItemMixin extends StandingAndWallBlockItem {
             cancellable = true)
     protected void postPlacement(BlockPos pos, Level world, @Nullable Player player,
             ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> info) {
-        Optional<CompoundTag> optNbtCompound =
-                stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag()
-                        .getCompound("BlockEntityTag");
-        if (optNbtCompound.isPresent()) {
+        CompoundTag nbtCompound = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+                .copyTag().getCompound("BlockEntityTag");
+        if (!nbtCompound.isEmpty()) {
             info.cancel();
         }
     }

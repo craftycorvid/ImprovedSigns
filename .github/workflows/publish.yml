@@ -3,7 +3,7 @@ on: [workflow_dispatch]
 
 env:
   VERSION: 1.7.1
-  RELEASE_NAME: Improved Signs 1.7.1 for Minecraft 26.2
+  RELEASE_NAME: Improved Signs 1.7.1 for Minecraft 1.21.1
   CHANGE_LOG: |
     - Fixed sign copy
   MODRINTH_TOKEN: ${{ secrets.PUBLISH_MODRINTH_TOKEN }}

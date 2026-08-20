@@ -1,9 +1,13 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "ingredients": [
-    "minecraft:crimson_sign"
+    {
+      "item": "minecraft:crimson_sign"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "minecraft:crimson_sign"
   }
 }

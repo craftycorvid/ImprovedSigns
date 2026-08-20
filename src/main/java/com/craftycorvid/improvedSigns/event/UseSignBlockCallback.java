@@ -50,7 +50,7 @@ public class UseSignBlockCallback {
                 CompoundTag nbt =
                         sign.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
                                 .copyTag();
-                CompoundTag blockEntityTag = nbt.getCompoundOrEmpty("BlockEntityTag");
+                CompoundTag blockEntityTag = nbt.getCompound("BlockEntityTag");
                 encodeSignText(signBlockEntity.getFrontText())
                         .ifPresent(text -> blockEntityTag.put("front_text", text));
                 encodeSignText(signBlockEntity.getBackText())
@@ -81,7 +81,7 @@ public class UseSignBlockCallback {
             ItemStack handItemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
             Item handItem = handItemStack.getItem();
             if (handItem instanceof SignApplicator) {
-                return blockState.useItemOn(handItemStack, world, player, hand, hitResult);
+                return blockState.useItemOn(handItemStack, world, player, hand, hitResult).result();
             }
 
             Item offhandItem = player.getItemInHand(InteractionHand.OFF_HAND).getItem();

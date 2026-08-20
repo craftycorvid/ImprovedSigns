@@ -2,6 +2,7 @@ package com.craftycorvid.improvedSigns.mixin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -26,26 +27,21 @@ public abstract class AbstractSignBlockMixin extends BaseEntityBlock {
         public void setPlacedBy(Level world, BlockPos pos, BlockState state,
                         @Nullable LivingEntity placer, ItemStack itemStack) {
                 super.setPlacedBy(world, pos, state, placer, itemStack);
-                itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
-                                .copyTag().getCompound("BlockEntityTag").ifPresent(nbtCompound -> {
-                                        BlockEntity blockEntity = world.getBlockEntity(pos);
-                                        if (blockEntity instanceof SignBlockEntity signBlockEntity) {
-                                                signBlockEntity.setText(SignText.DIRECT_CODEC.parse(
-                                                                NbtOps.INSTANCE,
-                                                                nbtCompound.getCompoundOrEmpty(
-                                                                                "front_text"))
-                                                                .result().orElse(new SignText()),
-                                                                true);
-                                                signBlockEntity.setText(SignText.DIRECT_CODEC.parse(
-                                                                NbtOps.INSTANCE,
-                                                                nbtCompound.getCompoundOrEmpty(
-                                                                                "back_text"))
-                                                                .result().orElse(new SignText()),
-                                                                false);
-                                                signBlockEntity.setWaxed(
-                                                                nbtCompound.getBoolean("is_waxed")
-                                                                                .orElse(false));
-                                        }
-                                });
+                CompoundTag nbtCompound =
+                                itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+                                                .copyTag().getCompound("BlockEntityTag");
+                if (nbtCompound.isEmpty())
+                        return;
+
+                BlockEntity blockEntity = world.getBlockEntity(pos);
+                if (blockEntity instanceof SignBlockEntity signBlockEntity) {
+                        signBlockEntity.setText(SignText.DIRECT_CODEC
+                                        .parse(NbtOps.INSTANCE, nbtCompound.getCompound("front_text"))
+                                        .result().orElse(new SignText()), true);
+                        signBlockEntity.setText(SignText.DIRECT_CODEC
+                                        .parse(NbtOps.INSTANCE, nbtCompound.getCompound("back_text"))
+                                        .result().orElse(new SignText()), false);
+                        signBlockEntity.setWaxed(nbtCompound.getBoolean("is_waxed"));
+                }
         }
 }

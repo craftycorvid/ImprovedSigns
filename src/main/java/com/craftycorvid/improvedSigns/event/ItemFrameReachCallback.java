@@ -2,7 +2,7 @@ package com.craftycorvid.improvedSigns.event;
 
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_ID;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,8 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class ItemFrameReachCallback {
-    private static final Identifier FRAME_REACH_MODIFIER =
-            Identifier.fromNamespaceAndPath(MOD_ID, "frame_reach");
+    private static final ResourceLocation FRAME_REACH_MODIFIER =
+            ResourceLocation.fromNamespaceAndPath(MOD_ID, "frame_reach");
     // Padding vanilla adds to the reach it accepts from clients, to be forgiving about lag
     private static final double VANILLA_REACH_PADDING = 3.0;
 
@@ -47,7 +47,7 @@ public class ItemFrameReachCallback {
         AttributeInstance entityReach = player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE);
         AttributeModifier bonus =
                 entityReach == null ? null : entityReach.getModifier(FRAME_REACH_MODIFIER);
-        if (bonus != null && !player.isWithinEntityInteractionRange(entity,
+        if (bonus != null && !player.canInteractWithEntity(entity,
                 VANILLA_REACH_PADDING - bonus.amount()))
             return InteractionResult.FAIL;
 

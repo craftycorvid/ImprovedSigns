@@ -1,9 +1,13 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "ingredients": [
-    "minecraft:acacia_sign"
+    {
+      "item": "minecraft:acacia_sign"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "minecraft:acacia_sign"
   }
 }
