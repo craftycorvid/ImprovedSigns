@@ -1,4 +1,4 @@
-# Improved Signs [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Improved Signs](docs/header.png)
 
 This mod is only for Fabric/Quilt Servers(or Single-Player) and requires [Fabric API](https://modrinth.com/mod/fabric-api) or [Quilted Fabric API](https://modrinth.com/mod/qsl)
 
@@ -29,3 +29,5 @@ Actively maintained versions: 26.2, 1.21.1
 - MeeniMc for contributing several version updates
 - Jarva for many contributions to the mod
 - Everyone else that has [contributed](https://github.com/CraftyCorvid/ImprovedSigns/graphs/contributors)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
