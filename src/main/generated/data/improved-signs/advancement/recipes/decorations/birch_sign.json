@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "improved-signs:birch_sign"
+        "recipes": "improved-signs:birch_sign"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -7,25 +7,19 @@ import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SignApplicator;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -47,20 +41,9 @@ public class UseSignBlockCallback {
             Optional<ItemStack> signHand = ImprovedSignsUtils.getSignHand(player);
             if (MOD_CONFIG.enableSignCopy && signHand.isPresent()) {
                 ItemStack sign = signHand.get();
-                CompoundTag nbt =
-                        sign.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
-                                .copyTag();
-                CompoundTag blockEntityTag = nbt.getCompoundOrEmpty("BlockEntityTag");
-                encodeSignText(signBlockEntity.getFrontText())
-                        .ifPresent(text -> blockEntityTag.put("front_text", text));
-                encodeSignText(signBlockEntity.getBackText())
-                        .ifPresent(text -> blockEntityTag.put("back_text", text));
-                blockEntityTag.putBoolean("is_waxed", signBlockEntity.isWaxed());
-                nbt.put("BlockEntityTag", blockEntityTag);
-                sign.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
+                ImprovedSignsUtils.copySignText(signBlockEntity, sign);
                 player.sendSystemMessage(
                         Component.literal("Sign text copied to " + sign.getCount() + " signs"));
-                ImprovedSignsUtils.appendSignTooltip(sign);
                 return InteractionResult.SUCCESS;
             }
 
@@ -94,11 +77,4 @@ public class UseSignBlockCallback {
         return InteractionResult.PASS;
 
     }
-
-    private static Optional<net.minecraft.nbt.Tag> encodeSignText(SignText signText) {
-        if (!MOD_CONFIG.retainDyeOnSignCopy)
-            signText = signText.setColor(DyeColor.BLACK).setHasGlowingText(false);
-        return SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, signText).result();
-    }
-
 }
