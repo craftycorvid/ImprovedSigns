@@ -73,3 +73,85 @@ jar {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 }
+
+// TEMPORARY DIAGNOSTIC (removed in the next commit): this session cannot download Minecraft, so
+// dump the 26.3 API of the classes this mod touches to the CI log.
+compileJava.doFirst {
+	try {
+		def cpFiles = sourceSets.main.compileClasspath.files
+		def cp = cpFiles.collect { it.absolutePath }.join(File.pathSeparator)
+		def javap = System.getProperty('java.home') + '/bin/javap'
+		def run = { List<String> args ->
+			def proc = ([javap] + args).execute()
+			def out = new StringBuffer()
+			def err = new StringBuffer()
+			proc.waitForProcessOutput(out, err)
+			return out.toString() + err.toString()
+		}
+		def full = { String cls ->
+			println "=== javap -p ${cls}"
+			println run(['-p', '-cp', cp, cls])
+		}
+		def filtered = { String cls, String regex ->
+			println "=== javap -p ${cls} | grep ${regex}"
+			run(['-p', '-cp', cp, cls]).readLines().findAll { it =~ regex }.each { println it }
+		}
+		def callers = { String cls, String regex ->
+			println "=== methods of ${cls} whose bytecode mentions ${regex}"
+			def header = null
+			def seen = [] as Set
+			run(['-p', '-c', '-cp', cp, cls]).readLines().each { line ->
+				if (line ==~ /^  \S.*\);$/ || line ==~ /^  \S.*\) throws .*;$/) header = line
+				else if (line =~ regex && header != null && !seen.contains(header)) { seen << header; println "  ${header}  ->  ${line.trim()}" }
+			}
+		}
+		def entries = { List<String> prefixes ->
+			println "=== jar entries under ${prefixes}"
+			cpFiles.findAll { it.name.endsWith('.jar') }.each { jar ->
+				def zip = new java.util.zip.ZipFile(jar)
+				try {
+					zip.entries().each { e -> if (prefixes.any { e.name.startsWith(it) }) println "  ${jar.name}: ${e.name}" }
+				} finally { zip.close() }
+			}
+		}
+		entries(['net/minecraft/world/level/block/entity/SignText', 'net/minecraft/world/level/storage/loot/functions/CopyComponentsFunction', 'net/minecraft/world/item/SignItem', 'net/minecraft/world/item/HangingSignItem', 'net/minecraft/world/item/StandingAndWallBlockItem', 'net/minecraft/world/entity/decoration/ItemFrame', 'net/minecraft/world/level/storage/loot/predicates/LootItemCondition'])
+		full('net.minecraft.world.level.block.entity.SignText')
+		full('net.minecraft.world.level.block.entity.SignTextSlot')
+		full('net.minecraft.world.level.block.entity.SignBlockEntity')
+		full('net.minecraft.world.level.block.SignBlock')
+		full('net.minecraft.world.item.BlockItem')
+		full('net.minecraft.world.item.StandingAndWallBlockItem')
+		full('net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction')
+		full('net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction$Builder')
+		full('net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction$Builder')
+		full('net.minecraft.world.level.storage.loot.functions.LootItemFunction$Builder')
+		full('net.minecraft.world.level.storage.loot.predicates.LootItemCondition')
+		full('net.minecraft.world.level.storage.loot.predicates.LootItemCondition$Builder')
+		full('net.minecraft.world.level.storage.loot.ConditionUserBuilder')
+		full('net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer$Builder')
+		full('net.minecraft.world.level.storage.loot.LootPool$Builder')
+		full('net.minecraft.world.entity.ai.attributes.AttributeInstance')
+		filtered('net.minecraft.world.item.Item$Properties', /signText|component|Properties\(/)
+		filtered('net.minecraft.data.loot.BlockLootSubProvider', /applyExplosion|add\(|dropSelf/)
+		filtered('net.minecraft.world.level.storage.loot.LootContext', /getOptional|hasParameter|getParameter|getParam/)
+		filtered('net.minecraft.server.level.ServerPlayer', /openTextEdit/)
+		filtered('net.minecraft.world.entity.player.Player', /openTextEdit|isWithinEntityInteractionRange/)
+		filtered('net.minecraft.core.component.DataComponents', /SIGN|WAXED|LORE|CUSTOM_DATA/)
+		filtered('net.minecraft.world.level.block.entity.BlockEntity', /Components\(|collectComponents|applyComponents/)
+		filtered('net.minecraft.core.component.DataComponentMap', /CODEC|builder/)
+		filtered('net.minecraft.world.item.ItemStack', /applyComponents|remove\(|set\(| get\(|getOrDefault/)
+		filtered('net.minecraft.world.level.Level', /noBorderCollision|noCollision/)
+		filtered('net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase', /isCollisionShapeFullBlock|useWithoutItem|useItemOn/)
+		filtered('net.minecraft.world.entity.decoration.HangingEntity', /survives|canCoexist|hasLevelCollision/)
+		filtered('net.minecraft.world.entity.decoration.ItemFrame', /survives|canCoexist|hasLevelCollision|interact|removeFramedMap/)
+		filtered('net.minecraft.world.entity.Entity', /hasLevelCollision|isInvisible|setInvisible/)
+		callers('net.minecraft.world.entity.decoration.ItemFrame', /hasLevelCollision|canCoexist|noCollision/)
+		callers('net.minecraft.world.entity.decoration.HangingEntity', /hasLevelCollision|noCollision|getEntities/)
+		callers('net.minecraft.world.item.BlockItem', /openTextEdit|SignBlock|applyComponents|Implicit/)
+		callers('net.minecraft.world.item.StandingAndWallBlockItem', /openTextEdit|SignBlock/)
+		callers('net.minecraft.world.level.block.SignBlock', /openTextEdit/)
+		callers('net.minecraft.world.level.block.entity.SignBlockEntity', /SIGN_TEXT|WAXED|openTextEdit/)
+	} catch (Throwable t) {
+		println "=== diagnostic failed: ${t}"
+	}
+}
