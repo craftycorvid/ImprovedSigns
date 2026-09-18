@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import com.craftycorvid.improvedSigns.loot.condition.SignTextLootCondition;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.level.block.Block;
@@ -12,6 +13,8 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 public class LootTableDatagen extends FabricBlockLootSubProvider {
     public LootTableDatagen(FabricPackOutput output,
@@ -50,14 +53,16 @@ public class LootTableDatagen extends FabricBlockLootSubProvider {
     // Since 26.3 sign text and the waxed state are item components, so the drop can copy them
     // straight from the block entity, the same way shulker boxes keep their contents.
     public void addSignDropTable(Block sign) {
+        LootItemFunction copySignText = CopyComponentsFunction
+                .copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
+                .include(DataComponents.SIGN_TEXT_FRONT)
+                .include(DataComponents.SIGN_TEXT_BACK)
+                .include(DataComponents.WAXED)
+                .when(Holder.direct(SignTextLootCondition.INSTANCE))
+                .build();
         this.add(sign,
                 LootTable.lootTable().withPool(this.applyExplosionCondition(sign,
-                        LootPool.lootPool().add(LootItem.lootTableItem(sign).apply(
-                                CopyComponentsFunction
-                                        .copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
-                                        .include(DataComponents.SIGN_TEXT_FRONT)
-                                        .include(DataComponents.SIGN_TEXT_BACK)
-                                        .include(DataComponents.WAXED)
-                                        .when(SignTextLootCondition.builder()))))));
+                        LootPool.lootPool().add(LootItem.lootTableItem(sign)
+                                .apply(Holder.direct(copySignText))))));
     }
 }

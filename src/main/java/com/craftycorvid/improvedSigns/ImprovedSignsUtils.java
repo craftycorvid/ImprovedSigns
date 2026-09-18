@@ -1,15 +1,14 @@
 package com.craftycorvid.improvedSigns;
 
-import java.util.Arrays;
 import java.util.Optional;
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -63,8 +62,7 @@ public class ImprovedSignsUtils {
     }
 
     public static boolean hasText(SignText text) {
-        return Arrays.stream(text.getMessages(false))
-                .anyMatch(line -> !line.getString().isEmpty());
+        return text.getMessages(false).stream().anyMatch(line -> !line.getString().isEmpty());
     }
 
     public static boolean hasSignText(ItemStack stack) {
@@ -74,7 +72,7 @@ public class ImprovedSignsUtils {
     }
 
     private static SignText stripDye(SignText text) {
-        return text.setColor(DyeColor.BLACK).setHasGlowingText(false);
+        return text.withColor(DyeColor.BLACK).withGlowingText(false);
     }
 
     // Copies the sign's text (and waxed state) onto a sign item, the same way vanilla does when a
@@ -110,18 +108,13 @@ public class ImprovedSignsUtils {
         CompoundTag legacy = legacyTag.get();
 
         legacy.getCompound("front_text")
-                .flatMap(tag -> SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag).result())
+                .flatMap(tag -> SignText.CODEC.parse(NbtOps.INSTANCE, tag).result())
                 .ifPresent(text -> stack.set(DataComponents.SIGN_TEXT_FRONT, text));
         legacy.getCompound("back_text")
-                .flatMap(tag -> SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag).result())
+                .flatMap(tag -> SignText.CODEC.parse(NbtOps.INSTANCE, tag).result())
                 .ifPresent(text -> stack.set(DataComponents.SIGN_TEXT_BACK, text));
-        if (legacy.getBoolean("is_waxed").orElse(false)) {
-            // The waxed component carries no data, so build it through the component map codec
-            CompoundTag waxed = new CompoundTag();
-            waxed.put("minecraft:waxed", new CompoundTag());
-            DataComponentMap.CODEC.parse(NbtOps.INSTANCE, waxed).result()
-                    .ifPresent(stack::applyComponents);
-        }
+        if (legacy.getBoolean("is_waxed").orElse(false))
+            stack.set(DataComponents.WAXED, Unit.INSTANCE);
 
         nbt.remove(LEGACY_BLOCK_ENTITY_TAG);
         if (nbt.isEmpty())
