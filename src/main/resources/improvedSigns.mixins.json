@@ -3,10 +3,9 @@
   "package": "com.craftycorvid.improvedSigns.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "AbstractSignBlockMixin",
-    "BlockMixin",
-    "SignItemMixin",
-    "ItemFrameEntityMixin"
+    "BlockItemMixin",
+    "ItemFrameEntityMixin",
+    "ServerPlayerMixin"
   ],
   "client": [],
   "server": [],

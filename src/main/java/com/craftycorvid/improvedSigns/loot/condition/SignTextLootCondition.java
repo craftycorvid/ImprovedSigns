@@ -2,12 +2,15 @@ package com.craftycorvid.improvedSigns.loot.condition;
 
 import static com.craftycorvid.improvedSigns.ImprovedSignsMod.MOD_CONFIG;
 
-import java.util.Arrays;
-import net.minecraft.network.chat.CommonComponents;
+import java.util.Set;
+import com.craftycorvid.improvedSigns.ImprovedSignsUtils;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.util.context.ContextKey;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 public class SignTextLootCondition implements LootItemCondition {
@@ -21,20 +24,19 @@ public class SignTextLootCondition implements LootItemCondition {
     }
 
     @Override
+    public Set<ContextKey<?>> getReferencedContextParams() {
+        return Set.of(LootContextParams.BLOCK_ENTITY);
+    }
+
+    @Override
     public boolean test(LootContext lootContext) {
         if (!MOD_CONFIG.enableSignRetain)
             return false;
-        SignBlockEntity signBlockEntity =
-                (SignBlockEntity) lootContext.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (signBlockEntity == null)
+        BlockEntity blockEntity = lootContext.getOptional(LootContextParams.BLOCK_ENTITY);
+        if (!(blockEntity instanceof SignBlockEntity signBlockEntity))
             return false;
-        if (Arrays.stream(signBlockEntity.getText(true).getMessages(false))
-                .anyMatch(text -> !text.equals(CommonComponents.EMPTY)))
-            return true;
-        if (Arrays.stream(signBlockEntity.getText(false).getMessages(false))
-                .anyMatch(text -> !text.equals(CommonComponents.EMPTY)))
-            return true;
-        return false;
+        return ImprovedSignsUtils.hasText(signBlockEntity.getText(SignTextSlot.FRONT))
+                || ImprovedSignsUtils.hasText(signBlockEntity.getText(SignTextSlot.BACK));
     }
 
     public static LootItemCondition.Builder builder() {

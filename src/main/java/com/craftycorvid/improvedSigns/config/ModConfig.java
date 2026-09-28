@@ -26,7 +26,6 @@ public class ModConfig {
     public boolean enableSignPassthrough = true;
     public boolean enableSignRetain = true;
     public boolean enableSignCopy = true;
-    public boolean serverSideSignTextPreview = true;
     public boolean retainDyeOnSignCopy = false;
 
     public boolean enableFramePassthrough = true;

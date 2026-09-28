@@ -2,29 +2,21 @@ package com.craftycorvid.improvedSigns.datagen;
 
 import java.util.concurrent.CompletableFuture;
 import com.craftycorvid.improvedSigns.loot.condition.SignTextLootCondition;
-import com.mojang.serialization.JavaOps;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.loot.LootContext.BlockEntityTarget;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.CopyCustomDataFunction;
-import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
-import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 public class LootTableDatagen extends FabricBlockLootSubProvider {
-    // CopyCustomDataFunction.copyData only has public overloads for EntityTarget and NbtProvider;
-    // 26.2 exposes no factory for a block-entity NbtProvider, so parse the BlockEntityTarget's
-    // serialized name ("block_entity") through the public inline codec to get one.
-    private static final NbtProvider BLOCK_ENTITY = ContextNbtProvider.INLINE_CODEC
-            .parse(JavaOps.INSTANCE, BlockEntityTarget.BLOCK_ENTITY.getSerializedName()).result()
-            .orElseThrow();
-
     public LootTableDatagen(FabricPackOutput output,
             CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(output, registryLookup);
@@ -32,44 +24,45 @@ public class LootTableDatagen extends FabricBlockLootSubProvider {
 
     @Override
     public void generate() {
-        addSignNBTDropTable(Blocks.OAK_SIGN);
-        addSignNBTDropTable(Blocks.OAK_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.SPRUCE_SIGN);
-        addSignNBTDropTable(Blocks.SPRUCE_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.BIRCH_SIGN);
-        addSignNBTDropTable(Blocks.BIRCH_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.JUNGLE_SIGN);
-        addSignNBTDropTable(Blocks.JUNGLE_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.ACACIA_SIGN);
-        addSignNBTDropTable(Blocks.ACACIA_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.DARK_OAK_SIGN);
-        addSignNBTDropTable(Blocks.DARK_OAK_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.MANGROVE_SIGN);
-        addSignNBTDropTable(Blocks.MANGROVE_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.CHERRY_SIGN);
-        addSignNBTDropTable(Blocks.CHERRY_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.PALE_OAK_SIGN);
-        addSignNBTDropTable(Blocks.PALE_OAK_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.BAMBOO_SIGN);
-        addSignNBTDropTable(Blocks.BAMBOO_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.CRIMSON_SIGN);
-        addSignNBTDropTable(Blocks.CRIMSON_HANGING_SIGN);
-        addSignNBTDropTable(Blocks.WARPED_SIGN);
-        addSignNBTDropTable(Blocks.WARPED_HANGING_SIGN);
+        addSignDropTable(Blocks.OAK_SIGN);
+        addSignDropTable(Blocks.OAK_HANGING_SIGN);
+        addSignDropTable(Blocks.SPRUCE_SIGN);
+        addSignDropTable(Blocks.SPRUCE_HANGING_SIGN);
+        addSignDropTable(Blocks.BIRCH_SIGN);
+        addSignDropTable(Blocks.BIRCH_HANGING_SIGN);
+        addSignDropTable(Blocks.JUNGLE_SIGN);
+        addSignDropTable(Blocks.JUNGLE_HANGING_SIGN);
+        addSignDropTable(Blocks.ACACIA_SIGN);
+        addSignDropTable(Blocks.ACACIA_HANGING_SIGN);
+        addSignDropTable(Blocks.DARK_OAK_SIGN);
+        addSignDropTable(Blocks.DARK_OAK_HANGING_SIGN);
+        addSignDropTable(Blocks.MANGROVE_SIGN);
+        addSignDropTable(Blocks.MANGROVE_HANGING_SIGN);
+        addSignDropTable(Blocks.CHERRY_SIGN);
+        addSignDropTable(Blocks.CHERRY_HANGING_SIGN);
+        addSignDropTable(Blocks.PALE_OAK_SIGN);
+        addSignDropTable(Blocks.PALE_OAK_HANGING_SIGN);
+        addSignDropTable(Blocks.BAMBOO_SIGN);
+        addSignDropTable(Blocks.BAMBOO_HANGING_SIGN);
+        addSignDropTable(Blocks.CRIMSON_SIGN);
+        addSignDropTable(Blocks.CRIMSON_HANGING_SIGN);
+        addSignDropTable(Blocks.WARPED_SIGN);
+        addSignDropTable(Blocks.WARPED_HANGING_SIGN);
     }
 
-    // copyData(NbtProvider) is deprecated in 26.2, but it is the only public overload that can copy
-    // from a block entity (copyData(EntityTarget) cannot), so the deprecation is accepted here.
-    @SuppressWarnings("deprecation")
-    public void addSignNBTDropTable(Block sign) {
+    // Since 26.3 sign text and the waxed state are item components, so the drop can copy them
+    // straight from the block entity, the same way shulker boxes keep their contents.
+    public void addSignDropTable(Block sign) {
+        LootItemFunction copySignText = CopyComponentsFunction
+                .copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
+                .include(DataComponents.SIGN_TEXT_FRONT)
+                .include(DataComponents.SIGN_TEXT_BACK)
+                .include(DataComponents.WAXED)
+                .when(Holder.direct(SignTextLootCondition.INSTANCE))
+                .build();
         this.add(sign,
                 LootTable.lootTable().withPool(this.applyExplosionCondition(sign,
-                        LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(
-                                LootItem.lootTableItem(sign)
-                                        .apply(CopyCustomDataFunction.copyData(BLOCK_ENTITY)
-                                                .copy("front_text", "BlockEntityTag.front_text")
-                                                .copy("back_text", "BlockEntityTag.back_text")
-                                                .copy("is_waxed", "BlockEntityTag.is_waxed")
-                                                .when(SignTextLootCondition.builder()))))));
+                        LootPool.lootPool().add(LootItem.lootTableItem(sign)
+                                .apply(Holder.direct(copySignText))))));
     }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "improved-signs:pale_oak_sign"
+        "recipes": "improved-signs:pale_oak_sign"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

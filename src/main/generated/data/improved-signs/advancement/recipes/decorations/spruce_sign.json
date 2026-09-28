@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "improved-signs:spruce_sign"
+        "recipes": "improved-signs:spruce_sign"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

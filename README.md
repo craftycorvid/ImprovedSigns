@@ -2,7 +2,7 @@
 
 This mod is only for Fabric/Quilt Servers(or Single-Player) and requires [Fabric API](https://modrinth.com/mod/fabric-api) or [Quilted Fabric API](https://modrinth.com/mod/qsl)
 
-Actively maintained versions: 26.2, 1.21.1
+Actively maintained versions: 26.3, 1.21.1
 
 ### Features
 
@@ -14,7 +14,7 @@ Actively maintained versions: 26.2, 1.21.1
   - You can configure it to use Glass Panes instead
 - **Signs Retain** - Breaking a sign will retain that sign's text, color and glowing. Put the sign in a crafting window to reset it
 - **Sign Copy** - Right-clicking a sign with a sign(or stack of signs)w in your hand will copy the text to the held signs
-- Tooltip text for Sign Copy and Retain is generated server-side, no client-side mod required
+- Copied and retained text lives in the vanilla sign text item components, so the item tooltip shows it without a client-side mod
 
 ![Sign Tooltip Example](docs/screenshots/sign-tooltip-1.png) ![Sign Tooltip Example](docs/screenshots/sign-tooltip-2.png)
 
